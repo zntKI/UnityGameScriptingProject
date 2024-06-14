@@ -6,7 +6,9 @@ using UnityEngine.AI;
 public class RandomEnemyMovement : MonoBehaviour
 {
     [SerializeField]
-    private float range;
+    private float maxRange;
+    [SerializeField]
+    private float minRange;
 
     private NavMeshAgent agent;
 
@@ -22,7 +24,7 @@ public class RandomEnemyMovement : MonoBehaviour
         if (agent.remainingDistance <= agent.stoppingDistance) //done with path
         {
             Vector3 point;
-            if (RandomPoint(transform.position, range, out point))
+            if (RandomPoint(transform.position, out point))
             {
                 //Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
                 agent.SetDestination(point);
@@ -30,10 +32,15 @@ public class RandomEnemyMovement : MonoBehaviour
         }
     }
 
-    bool RandomPoint(Vector3 center, float range, out Vector3 result)
+    bool RandomPoint(Vector3 center, out Vector3 result)
     {
+        Vector3 randomPoint; //random point in a sphere within the max range
+        do
+        {
+            randomPoint = center + Random.insideUnitSphere * maxRange;
+        }
+        while (Vector3.Distance(center, randomPoint) < minRange);
 
-        Vector3 randomPoint = center + Random.insideUnitSphere * range; //random point in a sphere 
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas)) //documentation: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
         {

@@ -1,0 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class DebugDrawEnemyCircleRange : MonoBehaviour
+{
+    Vector3 center;
+
+    [Header("CircleMin")]
+    [SerializeField]
+    float radiusMin = 5f; // Radius of the circle
+    [SerializeField]
+    Color colorMin = Color.red; // Color of the circle
+
+    [Header("CircleMax")]
+    [SerializeField]
+    float radiusMax = 10f; // Radius of the circle
+    [SerializeField]
+    Color colorMax = Color.green; // Color of the circle
+
+    [Header("All")]
+    [SerializeField]
+    int segments = 50; // Number of segments to create the circle
+    float duration = 0.0f; // Duration for which the circle is visible
+
+    void OnDrawGizmos()
+    {
+        center = this.transform.position;
+        DrawCircle(center, radiusMin, segments, colorMin, duration);
+        DrawCircle(center, radiusMax, segments, colorMax, duration);
+    }
+
+    void DrawCircle(Vector3 center, float radius, int segments, Color color, float duration)
+    {
+        float angle = 0f;
+        float angleStep = 360f / segments;
+
+        Vector3 prevPoint = center + new Vector3(Mathf.Cos(Mathf.Deg2Rad * angle) * radius, 0, Mathf.Sin(Mathf.Deg2Rad * angle) * radius);
+        angle += angleStep;
+
+        for (int i = 1; i <= segments; i++)
+        {
+            Vector3 nextPoint = center + new Vector3(Mathf.Cos(Mathf.Deg2Rad * angle) * radius, 0, Mathf.Sin(Mathf.Deg2Rad * angle) * radius);
+            Debug.DrawLine(prevPoint, nextPoint, color, duration);
+            prevPoint = nextPoint;
+            angle += angleStep;
+        }
+    }
+}
