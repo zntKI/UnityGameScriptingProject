@@ -13,6 +13,8 @@ public class RandomEnemyMovement : MonoBehaviour
     EnemyState state = EnemyState.Patrolling;
 
 
+    public Transform targetIndicator;
+
     [Header("Patroling")]
 
     [SerializeField]
@@ -65,7 +67,7 @@ public class RandomEnemyMovement : MonoBehaviour
     void HandleRetreating()
     {
         if (agent.remainingDistance <= agent.stoppingDistance)
-            state = EnemyState.Patrolling;
+            SetState(EnemyState.Patrolling);
     }
 
     void HandleTargeting()
@@ -73,10 +75,11 @@ public class RandomEnemyMovement : MonoBehaviour
         agent.SetDestination(player.position);
         if (Input.GetMouseButtonDown(0)) // TODO: Expand when knifes are implemented
         {
-            state = EnemyState.Retreating;
+            SetState(EnemyState.Retreating);
 
             Vector3 point = RandomPoint(transform.position, minRetreatRange, maxRetreatRange);
             agent.SetDestination(point);
+            targetIndicator.position = point;
         }
     }
 
@@ -86,24 +89,47 @@ public class RandomEnemyMovement : MonoBehaviour
         {
             Vector3 point = RandomPoint(transform.position, minPatrolingRange, maxPatrolingRange);
             agent.SetDestination(point);
+            targetIndicator.position = point;
         }
         else // Check for player detection
         {
             Vector3 deltaVec = player.position - transform.position;
             if (deltaVec.magnitude <= targetRange
                 && Vector3.Dot(transform.forward, deltaVec) > 0)
+            // maybe raycast too
             {
-                state = EnemyState.Targeting;
+                SetState(EnemyState.Targeting);
             }
         }
     }
 
+    void SetState(EnemyState newState)
+    {
+        state = newState;
+        Color debugColor;
+        switch (state)
+        {
+            case EnemyState.Targeting:
+                debugColor = Color.red; break;
+            case EnemyState.Patrolling:
+                debugColor = Color.yellow; break;
+            case EnemyState.Retreating:
+                debugColor = Color.green; break;
+            default:
+                debugColor = Color.white; break;
+        }
+        GetComponent<MeshRenderer>().material.color = debugColor;
+    }
+
     Vector3 RandomPoint(Vector3 center, float minRange, float maxRange)
     {
+        // TODO: add iteration count to prevent infinite while loops
+        int countOut = 0;
         while (true)
         {
             bool extraConditionDependingOnState;
 
+            int countIn = 0;
             Vector3 randomPoint; // Random point in a sphere within the max range
             Vector3 deltaVec;
             do
@@ -123,9 +149,21 @@ public class RandomEnemyMovement : MonoBehaviour
                         extraConditionDependingOnState = false;
                         break;
                 }
+
+                countIn++;
+                if (countIn > 1000)
+                {
+                    throw new System.Exception("Error: infinite while loop. Cannot find point satisfying special condition");
+                }
             }
             while (deltaVec.magnitude < minRange || //If it is within the minRange
                     extraConditionDependingOnState);
+
+            countOut++;
+            if (countOut > 1000)
+            {
+                throw new System.Exception("Error: infinite while loop. Cannot find point on mav mesh");
+            }
 
             NavMeshHit hit;
             if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
