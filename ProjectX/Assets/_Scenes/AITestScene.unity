@@ -759,8 +759,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878112816}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -26.829, y: 0, z: -29.6073}
-  m_LocalScale: {x: 3.7008002, y: 3.5135381, z: 3.7302105}
+  m_LocalPosition: {x: -10.7697, y: 0, z: -7.4869}
+  m_LocalScale: {x: 6.9128704, y: 3.5135381, z: 8.154255}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -884,7 +884,7 @@ GameObject:
   - component: {fileID: 2064774866}
   - component: {fileID: 2064774865}
   - component: {fileID: 2064774864}
-  - component: {fileID: 2064774869}
+  - component: {fileID: 2064774871}
   - component: {fileID: 2064774870}
   m_Layer: 0
   m_Name: Enemy
@@ -1003,20 +1003,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2064774869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064774863}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0352856b4ce3ce24fbe70cc4dbab5c2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxRange: 10
-  minRange: 5
 --- !u!114 &2064774870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1034,3 +1020,20 @@ MonoBehaviour:
   radiusMax: 10
   colorMax: {r: 0, g: 1, b: 0, a: 1}
   segments: 50
+--- !u!114 &2064774871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064774863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0352856b4ce3ce24fbe70cc4dbab5c2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minPatrolingRange: 5
+  maxPatrolingRange: 10
+  targetRange: 10
+  minRetreatRange: 20
+  maxRetreatRange: 30
