@@ -98,7 +98,11 @@ public class RandomEnemyMovement : MonoBehaviour
                 && Vector3.Dot(transform.forward, deltaVec) > 0)
             // maybe raycast too
             {
-                SetState(EnemyState.Targeting);
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, transform.forward, out hit, targetRange) && hit.collider.tag == "Player") // Check if there is nothing between the player and the enemy
+                {
+                    SetState(EnemyState.Targeting);
+                }
             }
         }
     }
@@ -162,7 +166,7 @@ public class RandomEnemyMovement : MonoBehaviour
             countOut++;
             if (countOut > 1000)
             {
-                throw new System.Exception("Error: infinite while loop. Cannot find point on mav mesh");
+                throw new System.Exception("Error: infinite while loop. Cannot find point on nav mesh");
             }
 
             NavMeshHit hit;
