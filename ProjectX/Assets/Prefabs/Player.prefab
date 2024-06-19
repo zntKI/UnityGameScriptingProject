@@ -119,9 +119,10 @@ GameObject:
   - component: {fileID: 1056645706742041227}
   - component: {fileID: 5956884897062924335}
   - component: {fileID: 8708553159111253963}
+  - component: {fileID: 6808293217664959564}
   - component: {fileID: 421176149922446703}
   - component: {fileID: 3628797874326615091}
-  - component: {fileID: 6808293217664959564}
+  - component: {fileID: 3756882212900293226}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -244,6 +245,22 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!208 &6808293217664959564
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6415933458502203271}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.5, y: 0.00001, z: 1.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!114 &421176149922446703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,22 +289,18 @@ MonoBehaviour:
   cameraToRotate: {fileID: 5312504057286752908}
   sensX: 500
   sensY: 500
---- !u!208 &6808293217664959564
-NavMeshObstacle:
+--- !u!114 &3756882212900293226
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6415933458502203271}
   m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 1.5, y: 0.00001, z: 1.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 0
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18c27a429eae26d4fa33d0976b311cf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7228263435538213132
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,5 +332,5 @@ Transform:
   - {fileID: 7942511350696139540}
   - {fileID: 5312504057286752908}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

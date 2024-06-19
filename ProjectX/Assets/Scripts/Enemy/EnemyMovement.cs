@@ -85,6 +85,7 @@ public class RandomEnemyMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) // TODO: Expand when knifes are implemented
         {
             SetState(EnemyState.Retreating);
+            player.GetComponent<NavMeshObstacle>().enabled = true; // Make an event instead
 
             Vector3 point = RandomPoint(transform.position, minRetreatRange, maxRetreatRange);
             agent.SetDestination(point);
