@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,10 +11,16 @@ public class RandomEnemyMovement : MonoBehaviour
     {
         Patrolling, Targeting, Retreating
     }
-    EnemyState state = EnemyState.Patrolling;
+    EnemyState state;
 
 
     public Transform targetIndicator;
+
+    [Header("Waypoints")]
+
+    [SerializeField]
+    List<Transform> waypoints;
+    List<Transform> tempRemovedWaypoints = new List<Transform>();
 
     [Header("Patroling")]
 
@@ -41,6 +48,8 @@ public class RandomEnemyMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SetState(EnemyState.Patrolling);
+
         agent = GetComponent<NavMeshAgent>();
         player = FindObjectOfType<PlayerMovement>().transform;
     }
@@ -99,7 +108,7 @@ public class RandomEnemyMovement : MonoBehaviour
             // maybe raycast too
             {
                 RaycastHit hit;
-                if (Physics.Raycast(transform.position, transform.forward, out hit, targetRange) && hit.collider.tag == "Player") // Check if there is nothing between the player and the enemy
+                if (Physics.Raycast(transform.position, deltaVec.normalized, out hit, targetRange) && hit.collider.CompareTag("Player")) // Check if there is nothing between the player and the enemy
                 {
                     SetState(EnemyState.Targeting);
                 }
@@ -116,7 +125,7 @@ public class RandomEnemyMovement : MonoBehaviour
             case EnemyState.Targeting:
                 debugColor = Color.red; break;
             case EnemyState.Patrolling:
-                debugColor = Color.yellow; break;
+                debugColor = Color.blue; break;
             case EnemyState.Retreating:
                 debugColor = Color.green; break;
             default:
@@ -127,41 +136,38 @@ public class RandomEnemyMovement : MonoBehaviour
 
     Vector3 RandomPoint(Vector3 center, float minRange, float maxRange)
     {
-        // TODO: add iteration count to prevent infinite while loops
+        // Re-adds waypoints if there are no more left
+        if (waypoints.Count == 0)
+        {
+            waypoints.AddRange(tempRemovedWaypoints);
+            tempRemovedWaypoints.Clear();
+        }
+
+        // Gets all the waypoints that satisfy the given condition
+        List<Transform> validWaypoints;
+        do
+        {
+            validWaypoints = waypoints.Where(w => (w.position - transform.position).magnitude > minRange && (w.position - transform.position).magnitude < maxRange).ToList();
+            maxRange += 0.1f; // If there are no waypoints that satisfy the conditions broaden the search
+        }
+        while (validWaypoints.Count == 0);
+
+        // Gets a random waypoint from the valid waypoints
+        int rndIndex = Random.Range(0, validWaypoints.Count);
+        Transform rndWaypoint = validWaypoints[rndIndex];
+
+        // Removing waypoints from the list to reduce randomness in the movement, therefore prevent staying mostly at only one area of the level
+        waypoints.Remove(rndWaypoint);
+        tempRemovedWaypoints.Add(rndWaypoint);
+
+
         int countOut = 0;
+
+        float waypointRadius = rndWaypoint.GetComponent<DebugDrawCircleRange>().Radius;
+        Vector3 randomPoint;
         while (true)
         {
-            bool extraConditionDependingOnState;
-
-            int countIn = 0;
-            Vector3 randomPoint; // Random point in a sphere within the max range
-            Vector3 deltaVec;
-            do
-            {
-                randomPoint = center + Random.insideUnitSphere * maxRange; // Generate new point if it is within the maxRange
-                deltaVec = randomPoint - center;
-
-                switch (state)
-                {
-                    case EnemyState.Patrolling:
-                        extraConditionDependingOnState = Vector3.Dot(transform.forward, deltaVec) < 0; // If the point is in the opposite direction (opposite to below)
-                        break;
-                    case EnemyState.Retreating:
-                        extraConditionDependingOnState = Vector3.Dot(deltaVec.normalized, player.transform.forward) < 0.8f; // If the point is in the same direction (opposite to above)
-                        break;
-                    default:
-                        extraConditionDependingOnState = false;
-                        break;
-                }
-
-                countIn++;
-                if (countIn > 1000)
-                {
-                    throw new System.Exception("Error: infinite while loop. Cannot find point satisfying special condition");
-                }
-            }
-            while (deltaVec.magnitude < minRange || //If it is within the minRange
-                    extraConditionDependingOnState);
+            randomPoint = rndWaypoint.position + Random.insideUnitSphere * waypointRadius;
 
             countOut++;
             if (countOut > 1000)

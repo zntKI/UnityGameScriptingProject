@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 7963900785371076599}
   - component: {fileID: 6206348652136749362}
   - component: {fileID: 3547090200153213688}
+  - component: {fileID: 2061970196072302416}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -268,8 +269,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 159fd8ea8a2ebe346a0b6251318b37f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radiusMin: 5
-  colorMin: {r: 1, g: 0, b: 0, a: 1}
-  radiusMax: 10
-  colorMax: {r: 0, g: 1, b: 0, a: 1}
+  radius: 5
+  color: {r: 1, g: 0, b: 0, a: 1}
+  segments: 50
+--- !u!114 &2061970196072302416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4438596316637134197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 159fd8ea8a2ebe346a0b6251318b37f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 10
+  color: {r: 0, g: 1, b: 0, a: 1}
   segments: 50

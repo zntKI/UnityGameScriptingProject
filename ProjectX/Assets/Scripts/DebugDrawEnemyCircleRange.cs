@@ -2,21 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebugDrawEnemyCircleRange : MonoBehaviour
+public class DebugDrawCircleRange : MonoBehaviour
 {
+    public float Radius => radius;
+
     Vector3 center;
 
-    [Header("CircleMin")]
+    [Header("Circle")]
     [SerializeField]
-    float radiusMin = 5f; // Radius of the circle
+    float radius = 5f; // Radius of the circle
     [SerializeField]
-    Color colorMin = Color.red; // Color of the circle
-
-    [Header("CircleMax")]
-    [SerializeField]
-    float radiusMax = 10f; // Radius of the circle
-    [SerializeField]
-    Color colorMax = Color.green; // Color of the circle
+    Color color = Color.red; // Color of the circle
 
     [Header("All")]
     [SerializeField]
@@ -26,8 +22,7 @@ public class DebugDrawEnemyCircleRange : MonoBehaviour
     void OnDrawGizmos()
     {
         center = this.transform.position;
-        DrawCircle(center, radiusMin, segments, colorMin, duration);
-        DrawCircle(center, radiusMax, segments, colorMax, duration);
+        DrawCircle(center, radius, segments, color, duration);
     }
 
     void DrawCircle(Vector3 center, float radius, int segments, Color color, float duration)
