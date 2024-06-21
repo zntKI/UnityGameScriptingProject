@@ -19,7 +19,7 @@ public class RandomEnemyMovement : MonoBehaviour
     [Header("Waypoints")]
 
     [SerializeField]
-    List<Transform> waypoints;
+    List<Transform> waypoints; // TODO: Find them at run-time
     List<Transform> tempRemovedWaypoints = new List<Transform>();
 
     [Header("Patroling")]
@@ -45,7 +45,16 @@ public class RandomEnemyMovement : MonoBehaviour
     [SerializeField]
     float maxRetreatRange;
 
-    // Start is called before the first frame update
+    [Header("TimePhaseVariables")]
+
+    [SerializeField]
+    float fasterMoveSpeedAddAmount;
+
+    void Awake()
+    {
+        TimeManager.OnTimePhaseChangeToMid += ChangeMovementSpeed;
+    }
+
     void Start()
     {
         SetState(EnemyState.Patrolling);
@@ -54,7 +63,6 @@ public class RandomEnemyMovement : MonoBehaviour
         player = FindObjectOfType<PlayerMovement>().transform;
     }
 
-    // Update is called once per frame
     void Update()
     {
         switch (state)
@@ -184,5 +192,16 @@ public class RandomEnemyMovement : MonoBehaviour
                 return hit.position;
             }
         }
+    }
+
+    public void ChangeMovementSpeed()
+    {
+        agent.speed += fasterMoveSpeedAddAmount;
+        Debug.Log($"Changed enemy speed to {agent.speed}");
+    }
+
+    void OnDestroy()
+    {
+        TimeManager.OnTimePhaseChangeToMid -= ChangeMovementSpeed;
     }
 }

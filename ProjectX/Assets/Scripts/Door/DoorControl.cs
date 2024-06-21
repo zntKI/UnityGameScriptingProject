@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DoorControl : MonoBehaviour
 {
+    public bool IsOpen => anim.GetBool("IsOpen");
+
     Animator anim;
 
     // Start is called before the first frame update
@@ -12,8 +14,9 @@ public class DoorControl : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
-    public void OpenDoor()
+    public void HandleDoorInteraction()
     {
-        anim.SetBool("IsOpen", true);
+        //=> anim.SetBool("IsOpen", !IsOpen);
+
     }
 }
