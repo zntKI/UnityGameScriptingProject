@@ -15,8 +15,5 @@ public class DoorControl : MonoBehaviour
     }
 
     public void HandleDoorInteraction()
-    {
-        //=> anim.SetBool("IsOpen", !IsOpen);
-
-    }
+        => anim.SetBool("IsOpen", !IsOpen);
 }

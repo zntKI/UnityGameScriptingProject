@@ -29,6 +29,7 @@ public class InputHandler : MonoBehaviour
     {
         if (hit.collider.CompareTag("Door") && Input.GetKeyDown(KeyCode.E))
         {
+            Debug.Log("In");
             hit.transform.parent.GetComponent<DoorControl>().HandleDoorInteraction();
         }
     }

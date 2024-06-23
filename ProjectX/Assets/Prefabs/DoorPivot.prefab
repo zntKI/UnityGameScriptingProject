@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 3158008299449509034}
   - component: {fileID: 5043088239900609997}
   - component: {fileID: 424371549338611877}
-  - component: {fileID: 1641105906111562806}
-  - component: {fileID: 4810444584884208952}
   m_Layer: 0
   m_Name: DoorPivot
   m_TagString: Untagged
@@ -69,39 +67,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08fcefd2916cd374c8cb47463c2f4819, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1641105906111562806
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 364864468080205272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 797d14bbb318eb1458e5a3e9c4254d5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!65 &4810444584884208952
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 364864468080205272}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2.6081266, y: 1.573856, z: 2.7991142}
-  m_Center: {x: -0.19240808, y: 0.6953344, z: 0.86730385}
 --- !u!1 &6479989141808380318
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,6 +79,7 @@ GameObject:
   - component: {fileID: 4612283528071386400}
   - component: {fileID: 3049379368411937142}
   - component: {fileID: 2014833850244672906}
+  - component: {fileID: 1303621953187457592}
   - component: {fileID: 7654524475802908637}
   - component: {fileID: 2460495006972435398}
   m_Layer: 0
@@ -209,6 +175,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &1303621953187457592
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6479989141808380318}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.5, y: 1, z: 1.06}
+  m_Center: {x: -0.0000023841858, y: -0.0000012516975, z: 0.0000071525574}
 --- !u!208 &7654524475802908637
 NavMeshObstacle:
   m_ObjectHideFlags: 0

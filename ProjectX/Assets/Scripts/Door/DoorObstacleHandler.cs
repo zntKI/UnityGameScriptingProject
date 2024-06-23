@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class DoorObstacleHandler : MonoBehaviour
 {
-    NavMeshObstacle meshObstacle;
     DoorControl doorControl;
+
+    NavMeshObstacle meshObstacle;
+
+    BoxCollider normalCollider;
 
     void Awake()
     {
@@ -17,6 +21,8 @@ public class DoorObstacleHandler : MonoBehaviour
     {
         meshObstacle = GetComponent<NavMeshObstacle>();
         doorControl = transform.parent.GetComponent<DoorControl>();
+
+        normalCollider = GetComponents<BoxCollider>().First(c => !c.isTrigger);
     }
 
     void DisableObstacleComponent()
@@ -32,6 +38,26 @@ public class DoorObstacleHandler : MonoBehaviour
             && !doorControl.IsOpen)
         {
             doorControl.HandleDoorInteraction();
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (!meshObstacle.isActiveAndEnabled
+            && other.CompareTag("Enemy")
+            && doorControl.IsOpen)
+        {
+            normalCollider.enabled = false;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (!meshObstacle.isActiveAndEnabled
+            && other.CompareTag("Enemy")
+            && doorControl.IsOpen)
+        {
+            normalCollider.enabled = true;
         }
     }
 
