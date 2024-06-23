@@ -7,18 +7,20 @@ using UnityEngine.AI;
 
 public class RandomEnemyMovement : MonoBehaviour
 {
+    // TODOs:
+    //  Make enemy speed faster when in target mode by increasing the speed with the given amount
+    //  Make the enemy target the player if it detects that the player is colliding with it while in patrol mode
+    //  Make the enemy switch state to patrolling when having lost sight of the player 
+
     public static RandomEnemyMovement Instance => instance;
     static RandomEnemyMovement instance;
 
     public static event Action OnPlayerCaught;
 
-    NavMeshAgent agent;
-    enum EnemyState
-    {
-        Patrolling, Targeting, Retreating
-    }
+    public EnemyState State => state;
     EnemyState state;
 
+    NavMeshAgent agent;
 
     public Transform targetIndicator;
 
@@ -227,4 +229,9 @@ public class RandomEnemyMovement : MonoBehaviour
         TimeManager.OnTimePhaseChangeToMid -= ChangeMovementSpeed;
         TimeManager.OnTimePhaseChangeToGameOver -= SetStateToTargeting;
     }
+}
+
+public enum EnemyState
+{
+    Patrolling, Targeting, Retreating
 }

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Door
   - Enemy
+  - Knife
+  - Note
   layers:
   - Default
   - TransparentFX
