@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,11 @@ using UnityEngine.AI;
 
 public class RandomEnemyMovement : MonoBehaviour
 {
+    public static RandomEnemyMovement Instance => instance;
+    static RandomEnemyMovement instance;
+
+    public static event Action OnPlayerCaught;
+
     NavMeshAgent agent;
     enum EnemyState
     {
@@ -52,7 +58,13 @@ public class RandomEnemyMovement : MonoBehaviour
 
     void Awake()
     {
+        if (instance == null)
+            instance = this;
+        else
+            throw new InvalidOperationException("There can only be one Enemy in the scene!");
+
         TimeManager.OnTimePhaseChangeToMid += ChangeMovementSpeed;
+        TimeManager.OnTimePhaseChangeToGameOver += SetStateToTargeting;
     }
 
     void Start()
@@ -61,6 +73,24 @@ public class RandomEnemyMovement : MonoBehaviour
 
         agent = GetComponent<NavMeshAgent>();
         player = FindObjectOfType<PlayerMovement>().transform;
+    }
+
+    void SetState(EnemyState newState)
+    {
+        state = newState;
+        Color debugColor;
+        switch (state)
+        {
+            case EnemyState.Targeting:
+                debugColor = Color.red; break;
+            case EnemyState.Patrolling:
+                debugColor = Color.blue; break;
+            case EnemyState.Retreating:
+                debugColor = Color.green; break;
+            default:
+                debugColor = Color.white; break;
+        }
+        GetComponent<MeshRenderer>().material.color = debugColor;
     }
 
     void Update()
@@ -99,6 +129,11 @@ public class RandomEnemyMovement : MonoBehaviour
             agent.SetDestination(point);
             targetIndicator.position = point;
         }
+        else if (agent.remainingDistance <= agent.stoppingDistance) // Player DEAD
+        {
+            Debug.Log("Player has been caught!");
+            OnPlayerCaught?.Invoke();
+        }
     }
 
     void HandlePatroling()
@@ -125,24 +160,6 @@ public class RandomEnemyMovement : MonoBehaviour
         }
     }
 
-    void SetState(EnemyState newState)
-    {
-        state = newState;
-        Color debugColor;
-        switch (state)
-        {
-            case EnemyState.Targeting:
-                debugColor = Color.red; break;
-            case EnemyState.Patrolling:
-                debugColor = Color.blue; break;
-            case EnemyState.Retreating:
-                debugColor = Color.green; break;
-            default:
-                debugColor = Color.white; break;
-        }
-        GetComponent<MeshRenderer>().material.color = debugColor;
-    }
-
     Vector3 RandomPoint(Vector3 center, float minRange, float maxRange)
     {
         // Re-adds waypoints if there are no more left
@@ -162,7 +179,7 @@ public class RandomEnemyMovement : MonoBehaviour
         while (validWaypoints.Count == 0);
 
         // Gets a random waypoint from the valid waypoints
-        int rndIndex = Random.Range(0, validWaypoints.Count);
+        int rndIndex = UnityEngine.Random.Range(0, validWaypoints.Count);
         Transform rndWaypoint = validWaypoints[rndIndex];
 
         // Removing waypoints from the list to reduce randomness in the movement, therefore prevent staying mostly at only one area of the level
@@ -176,7 +193,7 @@ public class RandomEnemyMovement : MonoBehaviour
         Vector3 randomPoint;
         while (true)
         {
-            randomPoint = rndWaypoint.position + Random.insideUnitSphere * waypointRadius;
+            randomPoint = rndWaypoint.position + UnityEngine.Random.insideUnitSphere * waypointRadius;
 
             countOut++;
             if (countOut > 1000)
@@ -194,14 +211,20 @@ public class RandomEnemyMovement : MonoBehaviour
         }
     }
 
-    public void ChangeMovementSpeed()
+    void ChangeMovementSpeed()
     {
         agent.speed += fasterMoveSpeedAddAmount;
         Debug.Log($"Changed enemy speed to {agent.speed}");
     }
 
+    void SetStateToTargeting()
+    {
+        SetState(EnemyState.Targeting);
+    }
+
     void OnDestroy()
     {
         TimeManager.OnTimePhaseChangeToMid -= ChangeMovementSpeed;
+        TimeManager.OnTimePhaseChangeToGameOver -= SetStateToTargeting;
     }
 }
