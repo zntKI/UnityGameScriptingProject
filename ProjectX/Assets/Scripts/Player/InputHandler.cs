@@ -5,43 +5,74 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
+    public static InputHandler Instance => instance;
+    static InputHandler instance;
+    public static GameObject Player => instance.gameObject;
+
+
     public static event Action OnDoorOpen;
     public static event Action<string> OnNotePickup;
     public static event Action OnKnifePickup;
 
+    public static event Action OnThrowKnife;
+
     [SerializeField]
-    float rayCastMaxDist = 2f;
+    float pickUpRayCastMaxDist = 2f;
+    [SerializeField]
+    float knifeThrowRayCastMaxDist = 6f;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            throw new InvalidOperationException("There can only be one Player in the scene, therefore only one InputHandler!");
+        }
+    }
 
     void Update()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, rayCastMaxDist))
+        if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position, transform.forward, out hit, pickUpRayCastMaxDist)) // Interact with objects
         {
-            CheckHit(hit);
+            CheckForInteractables(hit);
+        }
+        else if (Input.GetMouseButtonDown(0)) // Throw knives
+        {
+            if (Physics.Raycast(transform.position, transform.forward, out hit, knifeThrowRayCastMaxDist))
+                OnThrowKnife?.Invoke();
+            else
+            {
+                // TODO: Add an event that just plays a sound indicating that throwing is not possible
+            }
         }
     }
 
-    void CheckHit(RaycastHit hit)
+    void CheckForInteractables(RaycastHit hit)
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        switch (hit.collider.tag)
         {
-            switch (hit.collider.tag)
-            {
-                case "Door":
-                    OnDoorOpen?.Invoke(); // Play a sound
-                    hit.transform.parent.GetComponent<DoorControl>().HandleDoorInteraction();
-                    break;
-                case "Note":
-                    OnNotePickup?.Invoke("TODO: change this text when you have the right UI component for the note game object");
-                    Destroy(hit.collider.gameObject);
-                    break;
-                case "Knife":
-                    OnKnifePickup?.Invoke();
-                    Destroy(hit.collider.gameObject);
-                    break;
-                default:
-                    break;
-            }
+            case "Door":
+                OnDoorOpen?.Invoke(); // Play a sound
+                hit.transform.parent.GetComponent<DoorControl>().HandleDoorInteraction();
+                break;
+            case "Note":
+                // TODO: Play a sound
+                // TODO: Update UI
+                OnNotePickup?.Invoke("TODO: change this text when you have the right UI component for the note game object");
+                Destroy(hit.collider.gameObject);
+                break;
+            case "Knife":
+                // TODO: Play a sound
+                // TODO: Update UI
+                OnKnifePickup?.Invoke();
+                Destroy(hit.collider.gameObject);
+                break;
+            default:
+                break;
         }
     }
 }

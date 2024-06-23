@@ -8,6 +8,9 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager Instance => instance;
     static InventoryManager instance;
 
+    [SerializeField]
+    GameObject knifePrefab;
+
     List<string> storyNotes;
     int numOfKnives;
 
@@ -26,21 +29,42 @@ public class InventoryManager : MonoBehaviour
 
         InputHandler.OnNotePickup += PickUpStoryNote;
         InputHandler.OnKnifePickup += PickUpKnife;
+
+        InputHandler.OnThrowKnife += ThrowKnife;
     }
 
     void PickUpStoryNote(string message)
     {
         Debug.Log("Picked up story note");
         storyNotes.Add(message);
-        // TODO: Play a sound - Fire an event
-        // TODO: Update UI - Fire an event
     }
 
     void PickUpKnife()
     {
         Debug.Log("Picked up knife");
         numOfKnives++;
-        // TODO: Play a sound - Fire an event
-        // TODO: Update UI - Fire an event
+    }
+
+    void ThrowKnife()
+    {
+        if (numOfKnives == 0)
+        {
+            Debug.Log("Do not have a knife to throw");
+            return;
+        }
+
+        Debug.Log("Threw a knife");
+        numOfKnives--;
+
+        // Spawn a knife
+        Instantiate(knifePrefab, InputHandler.Player.transform.position + InputHandler.Player.transform.forward * 2f, InputHandler.Player.transform.rotation);
+    }
+
+    void OnDestroy()
+    {
+        InputHandler.OnNotePickup -= PickUpStoryNote;
+        InputHandler.OnKnifePickup -= PickUpKnife;
+
+        InputHandler.OnThrowKnife -= ThrowKnife;
     }
 }

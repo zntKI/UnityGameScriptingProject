@@ -67,14 +67,16 @@ public class RandomEnemyMovement : MonoBehaviour
 
         TimeManager.OnTimePhaseChangeToMid += ChangeMovementSpeed;
         TimeManager.OnTimePhaseChangeToGameOver += SetStateToTargeting;
+
+        KnifeToThrow.OnEnemyHit += DamageEnemy;
     }
 
     void Start()
     {
-        SetState(EnemyState.Patrolling);
-
         agent = GetComponent<NavMeshAgent>();
-        player = FindObjectOfType<PlayerMovement>().transform;
+        player = InputHandler.Player.transform;
+
+        SetState(EnemyState.Patrolling);
     }
 
     void SetState(EnemyState newState)
@@ -83,14 +85,26 @@ public class RandomEnemyMovement : MonoBehaviour
         Color debugColor;
         switch (state)
         {
-            case EnemyState.Targeting:
-                debugColor = Color.red; break;
             case EnemyState.Patrolling:
-                debugColor = Color.blue; break;
+                player.GetComponent<NavMeshObstacle>().enabled = false;
+
+                debugColor = Color.blue;
+                break;
+            case EnemyState.Targeting:
+                debugColor = Color.red;
+                break;
             case EnemyState.Retreating:
-                debugColor = Color.green; break;
+                Vector3 point = RandomPoint(transform.position, minRetreatRange, maxRetreatRange);
+                agent.SetDestination(point);
+                targetIndicator.position = point;
+
+                player.GetComponent<NavMeshObstacle>().enabled = true;
+
+                debugColor = Color.green;
+                break;
             default:
-                debugColor = Color.white; break;
+                debugColor = Color.white;
+                break;
         }
         GetComponent<MeshRenderer>().material.color = debugColor;
     }
@@ -122,16 +136,7 @@ public class RandomEnemyMovement : MonoBehaviour
     void HandleTargeting()
     {
         agent.SetDestination(player.position);
-        if (Input.GetMouseButtonDown(0)) // TODO: Expand when knifes are implemented
-        {
-            SetState(EnemyState.Retreating);
-            player.GetComponent<NavMeshObstacle>().enabled = true; // Make an event instead
-
-            Vector3 point = RandomPoint(transform.position, minRetreatRange, maxRetreatRange);
-            agent.SetDestination(point);
-            targetIndicator.position = point;
-        }
-        else if (agent.remainingDistance <= agent.stoppingDistance) // Player DEAD
+        if (agent.remainingDistance <= agent.stoppingDistance) // Player DEAD
         {
             Debug.Log("Player has been caught!");
             OnPlayerCaught?.Invoke();
@@ -224,10 +229,29 @@ public class RandomEnemyMovement : MonoBehaviour
         SetState(EnemyState.Targeting);
     }
 
+    void DamageEnemy()
+    {
+        switch (state)
+        {
+            case EnemyState.Patrolling:
+                Debug.Log("Hit enemy while patrolling");
+                SetState(EnemyState.Targeting);
+                break;
+            case EnemyState.Targeting:
+                Debug.Log("Hit enemy while targeting");
+                SetState(EnemyState.Retreating);
+                break;
+            default:
+                break;
+        }
+    }
+
     void OnDestroy()
     {
         TimeManager.OnTimePhaseChangeToMid -= ChangeMovementSpeed;
         TimeManager.OnTimePhaseChangeToGameOver -= SetStateToTargeting;
+
+        KnifeToThrow.OnEnemyHit -= DamageEnemy;
     }
 }
 
