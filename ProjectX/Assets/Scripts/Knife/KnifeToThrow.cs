@@ -32,24 +32,27 @@ public class KnifeToThrow : MonoBehaviour
     {
         Debug.Log("Knife destroyed");
 
-        switch (other.tag)
+        if (TimeManager.TimePhase != TimePhase.GameOver) // Do not address knife hit if game is in the final phase and the Enemy is chasing the player
         {
-            case "Enemy":
-                switch (RandomEnemyMovement.Instance.State)
-                {
-                    case EnemyState.Patrolling:
-                        OnEnemyHit?.Invoke();
-                        break;
-                    case EnemyState.Targeting:
-                        OnEnemyHit?.Invoke();
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            default:
-                OnHit?.Invoke();
-                break;
+            switch (other.tag)
+            {
+                case "Enemy":
+                    switch (RandomEnemyMovement.Instance.State)
+                    {
+                        case EnemyState.Patrolling:
+                            OnEnemyHit?.Invoke();
+                            break;
+                        case EnemyState.Targeting:
+                            OnEnemyHit?.Invoke();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    OnHit?.Invoke();
+                    break;
+            }
         }
 
         Destroy(gameObject);

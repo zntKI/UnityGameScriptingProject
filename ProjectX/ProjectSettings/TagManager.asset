@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Knife
   - Note
+  - Waypoint
   layers:
   - Default
   - TransparentFX

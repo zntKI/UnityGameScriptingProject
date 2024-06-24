@@ -8,6 +8,7 @@ public class TimeManager : MonoBehaviour
     public static TimeManager Instance => instance;
     static TimeManager instance;
 
+    public static TimePhase TimePhase => instance.timePhase;
     TimePhase timePhase = TimePhase.Early;
 
     public static event Action OnTimePhaseChangeToMid;

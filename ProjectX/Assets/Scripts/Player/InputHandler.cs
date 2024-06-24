@@ -17,9 +17,11 @@ public class InputHandler : MonoBehaviour
     public static event Action OnThrowKnife;
 
     [SerializeField]
-    float pickUpRayCastMaxDist = 2f;
+    float openDoorRayMaxDist = 4f;
     [SerializeField]
-    float knifeThrowRayCastMaxDist = 6f;
+    float pickUpRayMaxDist = 2f;
+    [SerializeField]
+    float knifeThrowRayMaxDist = 6f;
 
     void Awake()
     {
@@ -36,13 +38,19 @@ public class InputHandler : MonoBehaviour
     void Update()
     {
         RaycastHit hit;
-        if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position, transform.forward, out hit, pickUpRayCastMaxDist)) // Interact with objects
+        if (Input.GetKeyDown(KeyCode.F) && Physics.Raycast(transform.position, transform.forward, out hit, openDoorRayMaxDist)
+            && hit.collider.CompareTag("Door")) // Interact with objects
+        {
+            OnDoorOpen?.Invoke(); // Play a sound
+            hit.transform.parent.GetComponent<DoorControl>().HandleDoorInteraction();
+        }
+        else if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position, transform.forward, out hit, pickUpRayMaxDist))
         {
             CheckForInteractables(hit);
         }
         else if (Input.GetMouseButtonDown(0)) // Throw knives
         {
-            if (Physics.Raycast(transform.position, transform.forward, out hit, knifeThrowRayCastMaxDist))
+            if (Physics.Raycast(transform.position, transform.forward, out hit, knifeThrowRayMaxDist))
                 OnThrowKnife?.Invoke();
             else
             {
@@ -55,10 +63,6 @@ public class InputHandler : MonoBehaviour
     {
         switch (hit.collider.tag)
         {
-            case "Door":
-                OnDoorOpen?.Invoke(); // Play a sound
-                hit.transform.parent.GetComponent<DoorControl>().HandleDoorInteraction();
-                break;
             case "Note":
                 // TODO: Play a sound
                 // TODO: Update UI

@@ -8,7 +8,6 @@ using UnityEngine.AI;
 public class RandomEnemyMovement : MonoBehaviour
 {
     // TODOs:
-    //  Make enemy speed faster when in target mode by increasing the speed with the given amount
     //  Make the enemy target the player if it detects that the player is colliding with it while in patrol mode
     //  Make the enemy switch state to patrolling when having lost sight of the player 
 
@@ -24,24 +23,23 @@ public class RandomEnemyMovement : MonoBehaviour
 
     public Transform targetIndicator;
 
-    [Header("Waypoints")]
-
-    [SerializeField]
-    List<Transform> waypoints; // TODO: Find them at run-time
-    List<Transform> tempRemovedWaypoints = new List<Transform>();
+    List<Transform> waypoints;
+    List<Transform> tempRemovedWaypoints;
 
     [Header("Patroling")]
 
     [SerializeField]
-    float minPatrolingRange;
+    float minPatrolingRange = 5f;
     [SerializeField]
-    float maxPatrolingRange;
+    float maxPatrolingRange = 15f;
 
 
     [Header("Targeting")]
 
     [SerializeField]
-    float targetRange;
+    float targetRange = 10f;
+    [SerializeField]
+    float targetingSpeedAddAmount = 5f;
 
     Transform player;
 
@@ -49,14 +47,17 @@ public class RandomEnemyMovement : MonoBehaviour
     [Header("Retreating")]
 
     [SerializeField]
-    float minRetreatRange;
+    float minRetreatRange = 20f;
     [SerializeField]
-    float maxRetreatRange;
+    float maxRetreatRange = 30f;
+    [SerializeField]
+    float retreatingSpeedAddAmount = 10f;
+
 
     [Header("TimePhaseVariables")]
 
     [SerializeField]
-    float fasterMoveSpeedAddAmount;
+    float fasterMoveSpeedAddAmount = 5f;
 
     void Awake()
     {
@@ -76,11 +77,32 @@ public class RandomEnemyMovement : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         player = InputHandler.Player.transform;
 
+        waypoints = GameObject.FindGameObjectsWithTag("Waypoint").Select(w => w.transform).ToList();
+        if (waypoints.Count == 0)
+            throw new InvalidOperationException("No waypoints found for the Enemy to follow!");
+
+        tempRemovedWaypoints = new List<Transform>();
+
         SetState(EnemyState.Patrolling);
     }
 
     void SetState(EnemyState newState)
     {
+        // Undo changes made in the previous state setting
+        switch (state)
+        {
+            case EnemyState.Patrolling:
+                break;
+            case EnemyState.Targeting:
+                agent.speed -= targetingSpeedAddAmount;
+                break;
+            case EnemyState.Retreating:
+                agent.speed -= retreatingSpeedAddAmount;
+                break;
+            default:
+                break;
+        }
+
         state = newState;
         Color debugColor;
         switch (state)
@@ -91,12 +113,16 @@ public class RandomEnemyMovement : MonoBehaviour
                 debugColor = Color.blue;
                 break;
             case EnemyState.Targeting:
+                agent.speed += targetingSpeedAddAmount;
+
                 debugColor = Color.red;
                 break;
             case EnemyState.Retreating:
                 Vector3 point = RandomPoint(transform.position, minRetreatRange, maxRetreatRange);
                 agent.SetDestination(point);
                 targetIndicator.position = point;
+
+                agent.speed += retreatingSpeedAddAmount;
 
                 player.GetComponent<NavMeshObstacle>().enabled = true;
 
@@ -218,17 +244,27 @@ public class RandomEnemyMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called on event fired because time phase changed to Mid
+    /// </summary>
     void ChangeMovementSpeed()
     {
         agent.speed += fasterMoveSpeedAddAmount;
         Debug.Log($"Changed enemy speed to {agent.speed}");
     }
 
+    /// <summary>
+    /// Called on event fired because time phase changed to GameOver
+    /// </summary>
     void SetStateToTargeting()
     {
+        Debug.Log($"GameOver - Enemy chasing the Player!");
         SetState(EnemyState.Targeting);
     }
 
+    /// <summary>
+    /// Called on event fired because a knife hit the Enemy
+    /// </summary>
     void DamageEnemy()
     {
         switch (state)
@@ -243,6 +279,15 @@ public class RandomEnemyMovement : MonoBehaviour
                 break;
             default:
                 break;
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform == player)
+        {
+            Debug.Log($"Player has triggered targeting mode by bumping into the enemy");
+            SetState(EnemyState.Targeting);
         }
     }
 
