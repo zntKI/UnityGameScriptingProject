@@ -25,12 +25,10 @@ public class ShowTime : MonoBehaviour
     {
         StringBuilder time = new StringBuilder();
 
-        int hour = startHour + minutes / 60;
-        if (hour >= 24)
-            hour %= 24;
+        int hour = (startHour + minutes / 60) % 24;
         time.Append($"{(hour < 10 ? 0 : "")}{hour}:");
 
-        minutes = minutes % 60 == 0 ? 0 : minutes % 60;
+        minutes %= 60;
         time.Append($"{(minutes < 10 ? 0 : "")}{minutes}");
 
         text.text = time.ToString();
