@@ -280,48 +280,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetIndicator: {fileID: 0}
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   minPatrolingRange: 5
   maxPatrolingRange: 15
   targetRange: 10
-  targetingSpeedAddAmount: 0
+  targetingSpeedAddAmount: 5
   minRetreatRange: 20
   maxRetreatRange: 30
+  retreatingSpeedAddAmount: 10
   fasterMoveSpeedAddAmount: 5
 --- !u!114 &3547090200153213688
 MonoBehaviour:

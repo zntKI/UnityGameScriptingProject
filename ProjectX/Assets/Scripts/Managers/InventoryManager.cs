@@ -11,6 +11,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField]
     GameObject knifePrefab;
 
+    List<int> keys;
     List<string> storyNotes;
     int numOfKnives;
 
@@ -25,12 +26,23 @@ public class InventoryManager : MonoBehaviour
             throw new InvalidOperationException("There can only be one TimeManager in the scene!");
         }
 
+        keys = new List<int>();
         storyNotes = new List<string>();
 
+        InputHandler.OnKeyPickup += PickUpKey;
         InputHandler.OnNotePickup += PickUpStoryNote;
         InputHandler.OnKnifePickup += PickUpKnife;
 
         InputHandler.OnThrowKnife += ThrowKnife;
+    }
+
+    public static bool ContainsTheRightKey(int doorId)
+        => instance.keys.Contains(doorId);
+
+    void PickUpKey(int keyId)
+    {
+        Debug.Log("Picked up key");
+        keys.Add(keyId);
     }
 
     void PickUpStoryNote(string message)
@@ -62,6 +74,7 @@ public class InventoryManager : MonoBehaviour
 
     void OnDestroy()
     {
+        InputHandler.OnKeyPickup -= PickUpKey;
         InputHandler.OnNotePickup -= PickUpStoryNote;
         InputHandler.OnKnifePickup -= PickUpKnife;
 

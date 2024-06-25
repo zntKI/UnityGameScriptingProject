@@ -8,7 +8,6 @@ using UnityEngine.AI;
 public class RandomEnemyMovement : MonoBehaviour
 {
     // TODOs:
-    //  Make the enemy target the player if it detects that the player is colliding with it while in patrol mode
     //  Make the enemy switch state to patrolling when having lost sight of the player 
 
     public static RandomEnemyMovement Instance => instance;

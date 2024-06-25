@@ -9,6 +9,7 @@ TagManager:
   - Knife
   - Note
   - Waypoint
+  - Key
   layers:
   - Default
   - TransparentFX
