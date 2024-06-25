@@ -16,13 +16,11 @@ public class ShowTime : MonoBehaviour
         TimeManager.OnMinutePassed += UpdateTime;
     }
 
-    void Start()
-    {
-        text = GetComponent<TextMeshProUGUI>();
-    }
-
     void UpdateTime(int minutes)
     {
+        if (text == null)
+            text = GetComponent<TextMeshProUGUI>();
+
         StringBuilder time = new StringBuilder();
 
         int hour = (startHour + minutes / 60) % 24;
@@ -32,5 +30,10 @@ public class ShowTime : MonoBehaviour
         time.Append($"{(minutes < 10 ? 0 : "")}{minutes}");
 
         text.text = time.ToString();
+    }
+
+    void OnDestroy()
+    {
+        TimeManager.OnMinutePassed -= UpdateTime;
     }
 }

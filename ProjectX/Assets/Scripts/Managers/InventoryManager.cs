@@ -10,9 +10,9 @@ public class InventoryManager : MonoBehaviour
 
     public static event Action OnKeyPickedUp;
     public static event Action OnNotePickedUp;
-    public static event Action OnKnifePickedUp;
+    public static event Action<int> OnKnifePickedUp;
 
-    public static event Action OnThrownKnife;
+    public static event Action<int> OnThrownKnife;
 
     [SerializeField]
     GameObject knifePrefab;
@@ -50,6 +50,7 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("Picked up key");
         keys.Add(keyId);
 
+        // TODO: Play a sound
         OnKeyPickedUp?.Invoke();
     }
 
@@ -58,6 +59,7 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("Picked up story note");
         storyNotes.Add(message);
 
+        // TODO: Play a sound
         OnNotePickedUp?.Invoke();
     }
 
@@ -66,7 +68,9 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("Picked up knife");
         numOfKnives++;
 
-        OnKnifePickedUp?.Invoke();
+        // TODO: Play a sound
+        // TODO: Update UI
+        OnKnifePickedUp?.Invoke(numOfKnives);
     }
 
     void ThrowKnife()
@@ -83,7 +87,9 @@ public class InventoryManager : MonoBehaviour
         // Spawn a knife
         Instantiate(knifePrefab, InputHandler.Player.transform.position + InputHandler.Player.transform.forward * 2f, InputHandler.Player.transform.rotation);
 
-        OnThrownKnife?.Invoke();
+        // TODO: Play a sound
+        // TODO: Update UI
+        OnThrownKnife?.Invoke(numOfKnives);
     }
 
     void OnDestroy()

@@ -119,8 +119,6 @@ public class InputHandler : MonoBehaviour
         switch (hit.collider.tag)
         {
             case "Key":
-                // TODO: Play a sound
-                // TODO: Update UI
                 var keyDoorComponent = hit.transform.GetComponent<KeyDoor>();
                 if (keyDoorComponent == null)
                     throw new InvalidOperationException("Key must have a KeyDoor script component!");
@@ -128,8 +126,6 @@ public class InputHandler : MonoBehaviour
                 OnKeyPickup?.Invoke(keyDoorComponent.Id);
                 break;
             case "Note":
-                // TODO: Play a sound
-                // TODO: Update UI
                 var noteComponent = hit.collider.gameObject.GetComponent<Note>();
                 if (noteComponent == null)
                     throw new InvalidOperationException("Note must have a Note script component!");
@@ -137,8 +133,6 @@ public class InputHandler : MonoBehaviour
                 OnNotePickup?.Invoke(noteComponent.Text);
                 break;
             case "Knife":
-                // TODO: Play a sound
-                // TODO: Update UI
                 OnKnifePickup?.Invoke();
                 break;
             default:
