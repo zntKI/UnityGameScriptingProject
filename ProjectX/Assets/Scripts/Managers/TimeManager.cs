@@ -36,10 +36,6 @@ public class TimeManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-    }
-
     void Update()
     {
         HandleTimePhase();

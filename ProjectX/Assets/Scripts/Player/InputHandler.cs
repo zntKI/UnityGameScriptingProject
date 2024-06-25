@@ -9,6 +9,7 @@ public class InputHandler : MonoBehaviour
     static InputHandler instance;
     public static GameObject Player => instance.gameObject;
 
+    Transform cameraTransform;
 
     public static event Action OnDoorUnlock;
     public static event Action OnDoorLocked;
@@ -39,15 +40,31 @@ public class InputHandler : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        for (int i = 0; i < transform.parent.childCount; i++)
+        {
+            var child = transform.parent.GetChild(i);
+            if (child.CompareTag("MainCamera"))
+            {
+                cameraTransform = child;
+            }
+        }
+        if (cameraTransform == null)
+            throw new InvalidOperationException("No main camera, child of Player pivot, found!");
+    }
+
     void Update()
     {
+        //Debug.DrawRay(cameraTransform.position, cameraTransform.forward * pickUpRayMaxDist, Color.blue);
+
         RaycastHit hit;
-        if (Input.GetKeyDown(KeyCode.F) && Physics.Raycast(transform.position, transform.forward, out hit, openDoorRayMaxDist)
+        if (Input.GetKeyDown(KeyCode.F) && Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, openDoorRayMaxDist)
             && hit.collider.CompareTag("Door")) // Interact with objects
         {
             CheckDoorType(hit.transform);
         }
-        else if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position, transform.forward, out hit, pickUpRayMaxDist))
+        else if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, pickUpRayMaxDist))
         {
             CheckForInteractables(hit);
         }
