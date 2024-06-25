@@ -21,6 +21,9 @@ public class InputHandler : MonoBehaviour
 
     public static event Action OnThrowKnife;
 
+    public static event Action<string, KeyCode> OnInteractionTextEnable;
+    public static event Action OnInteractionTextDisable;
+
     [SerializeField]
     float openDoorRayMaxDist = 4f;
     [SerializeField]
@@ -59,16 +62,25 @@ public class InputHandler : MonoBehaviour
         //Debug.DrawRay(cameraTransform.position, cameraTransform.forward * pickUpRayMaxDist, Color.blue);
 
         RaycastHit hit;
-        if (Input.GetKeyDown(KeyCode.F) && Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, openDoorRayMaxDist)
-            && hit.collider.CompareTag("Door")) // Interact with objects
+        // Order of statements MATTERS (ray max dist)!
+        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, pickUpRayMaxDist)
+            && (hit.transform.CompareTag("Key")
+            || hit.transform.CompareTag("Note")
+            || hit.transform.CompareTag("Knife")))
+        {
+            CheckForInteractables(hit.transform);
+        }
+        else if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, openDoorRayMaxDist)
+            && hit.transform.CompareTag("Door"))
         {
             CheckDoorType(hit.transform);
         }
-        else if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, pickUpRayMaxDist))
+        else
         {
-            CheckForInteractables(hit);
+            OnInteractionTextDisable?.Invoke();
         }
-        else if (Input.GetMouseButtonDown(0)) // Throw knives
+
+        if (Input.GetMouseButtonDown((int)InputValues.ThrowKnife))
         {
             if (Physics.Raycast(transform.position, transform.forward, out hit, knifeThrowRayMaxDist))
                 OnThrowKnife?.Invoke();
@@ -80,65 +92,98 @@ public class InputHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks wheter the door needs a key to be opened or not
+    /// Checks for input wheter the door needs a key to be opened or not
     /// </summary>
-    void CheckDoorType(Transform door)
+    void CheckDoorType(Transform obj)
     {
-        var keyDoorComponent = door.GetComponent<KeyDoor>();
+        string interactableMessage = obj.parent.GetComponent<DoorControl>().IsOpen ? "Close" : "Open" + " door";
+        OnInteractionTextEnable?.Invoke(interactableMessage, (KeyCode)InputValues.OpenDoor);
 
-        if (keyDoorComponent == null)
+        if (Input.GetKeyDown((KeyCode)InputValues.OpenDoor))
         {
-            Debug.Log("No key door");
+            var keyDoorComponent = obj.GetComponent<KeyDoor>();
 
-            door.parent.GetComponent<DoorControl>().HandleDoorInteraction();
-            OnDoorOpen?.Invoke(); // Play a sound
-        }
-        else
-        {
-            Debug.Log("Key door");
-
-            if (InventoryManager.ContainsTheRightKey(keyDoorComponent.Id))
+            if (keyDoorComponent == null)
             {
-                Debug.Log("Unlocked door");
+                Debug.Log("No key door");
 
-                OnDoorUnlock?.Invoke(); // Play a sound
-                door.parent.GetComponent<DoorControl>().HandleDoorInteraction(); // TODO: Maybe add the option to be able to wait for a few seconds so that the previous sound could be played
+                obj.parent.GetComponent<DoorControl>().HandleDoorInteraction();
                 OnDoorOpen?.Invoke(); // Play a sound
             }
             else
             {
-                Debug.Log("No key for that door");
+                Debug.Log("Key door");
 
-                OnDoorLocked?.Invoke(); // Play a sound
+                if (InventoryManager.ContainsTheRightKey(keyDoorComponent.Id))
+                {
+                    Debug.Log("Unlocked door");
+
+                    OnDoorUnlock?.Invoke(); // Play a sound
+                    obj.parent.GetComponent<DoorControl>().HandleDoorInteraction(); // TODO: Maybe add the option to be able to wait for a few seconds so that the previous sound could be played
+                    OnDoorOpen?.Invoke(); // Play a sound
+                }
+                else
+                {
+                    Debug.Log("No key for that door");
+
+                    OnDoorLocked?.Invoke(); // Play a sound
+                }
             }
         }
     }
 
-    void CheckForInteractables(RaycastHit hit)
+    void CheckForInteractables(Transform obj)
     {
-        switch (hit.collider.tag)
+        string interactableMessage = "";
+        switch (obj.tag)
         {
             case "Key":
-                var keyDoorComponent = hit.transform.GetComponent<KeyDoor>();
-                if (keyDoorComponent == null)
-                    throw new InvalidOperationException("Key must have a KeyDoor script component!");
-
-                OnKeyPickup?.Invoke(keyDoorComponent.Id);
+                interactableMessage = "Pick up Key";
                 break;
             case "Note":
-                var noteComponent = hit.collider.gameObject.GetComponent<Note>();
-                if (noteComponent == null)
-                    throw new InvalidOperationException("Note must have a Note script component!");
-
-                OnNotePickup?.Invoke(noteComponent.Text);
+                interactableMessage = "Pick up Note";
                 break;
             case "Knife":
-                OnKnifePickup?.Invoke();
+                interactableMessage = "Pick up Knife";
                 break;
             default:
-                return;
+                break;
         }
+        OnInteractionTextEnable?.Invoke(interactableMessage, (KeyCode)InputValues.PickUp);
 
-        Destroy(hit.collider.gameObject);
+        if (Input.GetKeyDown((KeyCode)InputValues.PickUp))
+        {
+            switch (obj.tag)
+            {
+                case "Key":
+                    var keyDoorComponent = obj.GetComponent<KeyDoor>();
+                    if (keyDoorComponent == null)
+                        throw new InvalidOperationException("Key must have a KeyDoor script component!");
+
+                    OnKeyPickup?.Invoke(keyDoorComponent.Id);
+                    break;
+                case "Note":
+                    var noteComponent = obj.gameObject.GetComponent<Note>();
+                    if (noteComponent == null)
+                        throw new InvalidOperationException("Note must have a Note script component!");
+
+                    OnNotePickup?.Invoke(noteComponent.Text);
+                    break;
+                case "Knife":
+                    OnKnifePickup?.Invoke();
+                    break;
+                default:
+                    return;
+            }
+
+            Destroy(obj.gameObject);
+        }
     }
+}
+
+public enum InputValues
+{
+    PickUp = KeyCode.E,
+    OpenDoor = KeyCode.Q,
+    ThrowKnife = 0
 }
