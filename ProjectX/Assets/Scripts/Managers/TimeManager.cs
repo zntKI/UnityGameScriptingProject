@@ -15,14 +15,18 @@ public class TimeManager : MonoBehaviour
     public static event Action OnTimePhaseChangeToEnd;
     public static event Action OnTimePhaseChangeToGameOver;
 
+    public static event Action<int> OnMinutePassed;
+
     [SerializeField]
     int secondsForOneMinute;
 
     float timeCounter;
-    int minCounter;
+    int minPhaseCounter; // 'Minutes' since the current state started
+
+    int minCounter; // 'Minutes' since the game started - used for updating UI
 
     [SerializeField]
-    int phaseTimeMin;
+    int phaseTimeMinutes;
 
     void Awake()
     {
@@ -34,6 +38,11 @@ public class TimeManager : MonoBehaviour
         {
             throw new InvalidOperationException("There can only be one TimeManager in the scene!");
         }
+    }
+
+    void Start()
+    {
+        OnMinutePassed?.Invoke(minCounter);
     }
 
     void Update()
@@ -49,7 +58,10 @@ public class TimeManager : MonoBehaviour
             if (timeCounter >= secondsForOneMinute)
             {
                 minCounter++;
-                if (minCounter > phaseTimeMin)
+                OnMinutePassed?.Invoke(minCounter);
+
+                minPhaseCounter++;
+                if (minPhaseCounter > phaseTimeMinutes)
                     SetTimePhase();
 
                 timeCounter = 0;
@@ -67,7 +79,7 @@ public class TimeManager : MonoBehaviour
 
         Debug.Log($"Changed time phase to: {timePhase}");
 
-        minCounter = 0;
+        minPhaseCounter = 0;
 
         // Fire events
         switch (timePhase)
