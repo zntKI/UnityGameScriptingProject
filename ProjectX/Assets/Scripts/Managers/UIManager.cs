@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -10,12 +11,28 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance => instance;
     static UIManager instance;
 
+    public static event Action OnNoteOverlayOpened;
+    public static event Action OnNoteOverlayClosed;
+
+
+    [Header("Common")]
+
     [SerializeField]
     TextMeshProUGUI timeText;
     [SerializeField]
     TextMeshProUGUI knifeText;
     [SerializeField]
     TextMeshProUGUI interactableText;
+
+
+    [Header("Note")]
+
+    [SerializeField]
+    Transform noteOverlay;
+    [SerializeField]
+    TextMeshProUGUI noteText;
+    [SerializeField]
+    TextMeshProUGUI noteCloseText;
 
     const int startHour = 22;
 
@@ -34,6 +51,10 @@ public class UIManager : MonoBehaviour
 
         InventoryManager.OnKnifePickedUp += UpdateKnifeCount;
         InventoryManager.OnThrownKnife += UpdateKnifeCount;
+
+        InventoryManager.OnNotePickedUp += ShowNoteOverlay;
+        InputHandler.OnNoteOverlayClose += CloseNoteOverlay;
+        CloseNoteOverlay();
 
         InputHandler.OnInteractionTextEnable += EnableInteractableText;
         InputHandler.OnInteractionTextDisable += DisableInteractableText;
@@ -77,12 +98,57 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    void CloseNoteOverlay()
+    {
+        Debug.Log("Close note overlay");
+        if (noteOverlay.gameObject.activeSelf)
+        {
+            noteOverlay.gameObject.SetActive(false);
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var child = transform.GetChild(i);
+                if (child != noteOverlay)
+                {
+                    child.gameObject.SetActive(true);
+                }
+            }
+        }
+
+        // Resume time
+        OnNoteOverlayClosed?.Invoke();
+    }
+
+    void ShowNoteOverlay(string noteMessage, KeyCode closeKey)
+    {
+        Debug.Log("Open note overlay");
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var child = transform.GetChild(i);
+            if (child == noteOverlay)
+            {
+                child.gameObject.SetActive(true);
+                noteText.text = noteMessage;
+                noteCloseText.text = $"Close ({closeKey})";
+            }
+            else
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+
+        // Pause time
+        OnNoteOverlayOpened?.Invoke();
+    }
+
     void OnDestroy()
     {
         TimeManager.OnMinutePassed -= UpdateTime;
 
         InventoryManager.OnKnifePickedUp -= UpdateKnifeCount;
         InventoryManager.OnThrownKnife -= UpdateKnifeCount;
+
+        InventoryManager.OnNotePickedUp -= ShowNoteOverlay;
+        InputHandler.OnNoteOverlayClose -= CloseNoteOverlay;
 
         InputHandler.OnInteractionTextEnable -= EnableInteractableText;
         InputHandler.OnInteractionTextDisable -= DisableInteractableText;

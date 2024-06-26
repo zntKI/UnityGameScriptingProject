@@ -16,13 +16,15 @@ public class InputHandler : MonoBehaviour
     public static event Action OnDoorOpen;
 
     public static event Action<int> OnKeyPickup;
-    public static event Action<string> OnNotePickup;
+    public static event Action<string, KeyCode> OnNotePickup;
     public static event Action OnKnifePickup;
 
     public static event Action OnThrowKnife;
 
     public static event Action<string, KeyCode> OnInteractionTextEnable;
     public static event Action OnInteractionTextDisable;
+
+    public static event Action OnNoteOverlayClose;
 
     [SerializeField]
     float openDoorRayMaxDist = 4f;
@@ -88,6 +90,10 @@ public class InputHandler : MonoBehaviour
             {
                 // TODO: Add an event that just plays a sound indicating that throwing is not possible
             }
+        }
+        else if (Input.GetKeyDown((KeyCode)InputValues.CloseNoteOverlay))
+        {
+            OnNoteOverlayClose?.Invoke();
         }
     }
 
@@ -167,7 +173,7 @@ public class InputHandler : MonoBehaviour
                     if (noteComponent == null)
                         throw new InvalidOperationException("Note must have a Note script component!");
 
-                    OnNotePickup?.Invoke(noteComponent.Text);
+                    OnNotePickup?.Invoke(noteComponent.Text, (KeyCode)InputValues.CloseNoteOverlay);
                     break;
                 case "Knife":
                     OnKnifePickup?.Invoke();
@@ -185,5 +191,6 @@ public enum InputValues
 {
     PickUp = KeyCode.E,
     OpenDoor = KeyCode.Q,
+    CloseNoteOverlay = KeyCode.R,
     ThrowKnife = 0
 }

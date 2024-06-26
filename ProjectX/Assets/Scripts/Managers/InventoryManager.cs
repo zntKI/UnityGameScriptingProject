@@ -9,7 +9,7 @@ public class InventoryManager : MonoBehaviour
     static InventoryManager instance;
 
     public static event Action OnKeyPickedUp;
-    public static event Action OnNotePickedUp;
+    public static event Action<string, KeyCode> OnNotePickedUp;
     public static event Action<int> OnKnifePickedUp;
 
     public static event Action<int> OnThrownKnife;
@@ -54,13 +54,14 @@ public class InventoryManager : MonoBehaviour
         OnKeyPickedUp?.Invoke();
     }
 
-    void PickUpStoryNote(string message)
+    void PickUpStoryNote(string message, KeyCode closeKey)
     {
         Debug.Log("Picked up story note");
         storyNotes.Add(message);
 
         // TODO: Play a sound
-        OnNotePickedUp?.Invoke();
+        // TODO: Update UI
+        OnNotePickedUp?.Invoke(message, closeKey);
     }
 
     void PickUpKnife()

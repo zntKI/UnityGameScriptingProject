@@ -24,9 +24,12 @@ public class GameManager : MonoBehaviour
         }
 
         RandomEnemyMovement.OnPlayerCaught += PlayerDie;
+
+        UIManager.OnNoteOverlayOpened += PauseTime;
+        UIManager.OnNoteOverlayClosed += ResumeTime;
     }
 
-    private void PlayerDie()
+    void PlayerDie()
     {
         switch (SceneManager.GetActiveScene().name)
         {
@@ -41,8 +44,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void PauseTime()
+    {
+        Time.timeScale = 0f;
+    }
+
+    void ResumeTime()
+    {
+        Time.timeScale = 1f;
+    }
+
     void OnDestroy()
     {
         RandomEnemyMovement.OnPlayerCaught -= PlayerDie;
+
+        UIManager.OnNoteOverlayOpened -= PauseTime;
+        UIManager.OnNoteOverlayClosed -= ResumeTime;
     }
 }
