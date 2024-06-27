@@ -8419,7 +8419,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8633397331849117398, guid: 1c81b6c919b36344c96d32f864ff1b28, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 31.32
+      value: -21
       objectReference: {fileID: 0}
     - target: {fileID: 8633397331849117398, guid: 1c81b6c919b36344c96d32f864ff1b28, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8427,7 +8427,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8633397331849117398, guid: 1c81b6c919b36344c96d32f864ff1b28, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.9
+      value: -40.84
       objectReference: {fileID: 0}
     - target: {fileID: 8633397331849117398, guid: 1c81b6c919b36344c96d32f864ff1b28, type: 3}
       propertyPath: m_LocalRotation.w
@@ -10174,6 +10174,27 @@ PrefabInstance:
     - target: {fileID: 4085180328708432079, guid: 6addc9e45347206418f58ced1ad792b7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5956304428467566065, guid: 6addc9e45347206418f58ced1ad792b7, type: 3}
+      propertyPath: m_text
+      value: 'Alex (you):
+
+
+        Wha...What is this place?
+
+        It seems like
+        a hospital, but not one you are usually used to.
+
+        How did I get here
+        anyway?
+
+        Ahh, my head hurts...
+
+        Was I in a coma???
+
+
+        I''ll
+        have to explore and see what is going on!'
       objectReference: {fileID: 0}
     - target: {fileID: 6933820754048534559, guid: 6addc9e45347206418f58ced1ad792b7, type: 3}
       propertyPath: m_Name

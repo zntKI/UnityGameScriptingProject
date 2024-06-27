@@ -3149,6 +3149,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1122557509946252258, guid: c1fa319b16ac292498e658e663ec86a3, type: 3}
+      propertyPath: phaseTimeMinutes
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 4472694097016673478, guid: c1fa319b16ac292498e658e663ec86a3, type: 3}
       propertyPath: m_Name
       value: TimeManager
@@ -10708,6 +10712,20 @@ PrefabInstance:
     - target: {fileID: 4085180328708432079, guid: 6addc9e45347206418f58ced1ad792b7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5956304428467566065, guid: 6addc9e45347206418f58ced1ad792b7, type: 3}
+      propertyPath: m_text
+      value: 'Alex(you):
+
+
+        Ooof, I barely managed to escape from that madman.
+
+        I
+        wonder who he is and why is he wondering around an abondened hospital.
+
+
+        Hmm,
+        strange, this hospital actually seems familiar, I wonder why though?'
       objectReference: {fileID: 0}
     - target: {fileID: 6933820754048534559, guid: 6addc9e45347206418f58ced1ad792b7, type: 3}
       propertyPath: m_Name

@@ -54,7 +54,8 @@ public class UIManager : MonoBehaviour
 
         InventoryManager.OnNotePickedUp += ShowNoteOverlay;
         InputHandler.OnNoteOverlayClose += CloseNoteOverlay;
-        CloseNoteOverlay();
+        ShowNoteOverlay(noteText.text);
+        OnNoteOverlayClosed?.Invoke(); // ONLY for DEBUG - REMOVE for RELEASE
 
         InputHandler.OnInteractionTextEnable += EnableInteractableText;
         InputHandler.OnInteractionTextDisable += DisableInteractableText;
@@ -118,7 +119,7 @@ public class UIManager : MonoBehaviour
         OnNoteOverlayClosed?.Invoke();
     }
 
-    void ShowNoteOverlay(string noteMessage, KeyCode closeKey)
+    void ShowNoteOverlay(string noteMessage)
     {
         Debug.Log("Open note overlay");
         for (int i = 0; i < transform.childCount; i++)
@@ -128,7 +129,7 @@ public class UIManager : MonoBehaviour
             {
                 child.gameObject.SetActive(true);
                 noteText.text = noteMessage;
-                noteCloseText.text = $"Close ({closeKey})";
+                noteCloseText.text = $"Close ({(KeyCode)InputValues.CloseNoteOverlay})";
             }
             else
             {

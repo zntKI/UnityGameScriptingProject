@@ -16,7 +16,7 @@ public class InputHandler : MonoBehaviour
     public static event Action OnDoorOpen;
 
     public static event Action<int> OnKeyPickup;
-    public static event Action<string, KeyCode> OnNotePickup;
+    public static event Action<string> OnNotePickup;
     public static event Action OnKnifePickup;
 
     public static event Action OnThrowKnife;
@@ -173,7 +173,7 @@ public class InputHandler : MonoBehaviour
                     if (noteComponent == null)
                         throw new InvalidOperationException("Note must have a Note script component!");
 
-                    OnNotePickup?.Invoke(noteComponent.Text, (KeyCode)InputValues.CloseNoteOverlay);
+                    OnNotePickup?.Invoke(noteComponent.Text);
                     break;
                 case "Knife":
                     OnKnifePickup?.Invoke();
