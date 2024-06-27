@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public static event Action OnPlayerFinish;
+
     [SerializeField]
     float moveSpeed;
 
@@ -27,5 +30,13 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 moveDirection = moveInput.z * transform.forward + moveInput.x * transform.right;
         rb.velocity = moveDirection * moveSpeed;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Finish"))
+        {
+            OnPlayerFinish?.Invoke();
+        }
     }
 }

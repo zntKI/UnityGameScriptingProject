@@ -83,7 +83,7 @@ public class UIManager : MonoBehaviour
     {
         if (interactableText.text == "")
         {
-            Debug.Log("Enabled interactable text");
+            //Debug.Log("Enabled interactable text");
 
             interactableText.text = $"{message} ({inputValue})";
         }
@@ -93,7 +93,7 @@ public class UIManager : MonoBehaviour
     {
         if (interactableText.text != "")
         {
-            Debug.Log("Disabled interactable text");
+            //Debug.Log("Disabled interactable text");
             interactableText.text = "";
         }
     }

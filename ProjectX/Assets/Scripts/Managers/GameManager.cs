@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour
 
         UIManager.OnNoteOverlayOpened += PauseTime;
         UIManager.OnNoteOverlayClosed += ResumeTime;
+
+        PlayerMovement.OnPlayerFinish += LoadNextScene;
     }
 
     void PlayerDie()
@@ -42,6 +44,11 @@ public class GameManager : MonoBehaviour
             default:
                 throw new InvalidOperationException("There is no gameplay scene with such name!");
         }
+    }
+
+    void LoadNextScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     void PauseTime()
