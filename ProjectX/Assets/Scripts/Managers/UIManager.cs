@@ -55,7 +55,7 @@ public class UIManager : MonoBehaviour
         InventoryManager.OnNotePickedUp += ShowNoteOverlay;
         InputHandler.OnNoteOverlayClose += CloseNoteOverlay;
         ShowNoteOverlay(noteText.text);
-        OnNoteOverlayClosed?.Invoke(); // ONLY for DEBUG - REMOVE for RELEASE
+        //OnNoteOverlayClosed?.Invoke(); // ONLY for DEBUG - REMOVE for RELEASE
 
         InputHandler.OnInteractionTextEnable += EnableInteractableText;
         InputHandler.OnInteractionTextDisable += DisableInteractableText;

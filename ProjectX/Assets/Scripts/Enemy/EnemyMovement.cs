@@ -79,7 +79,6 @@ public class RandomEnemyMovement : MonoBehaviour
         waypoints = GameObject.FindGameObjectsWithTag("Waypoint").Select(w => w.transform).ToList();
         if (waypoints.Count == 0)
             throw new InvalidOperationException("No waypoints found for the Enemy to follow!");
-
         tempRemovedWaypoints = new List<Transform>();
 
         SetState(EnemyState.Patrolling);
@@ -117,7 +116,7 @@ public class RandomEnemyMovement : MonoBehaviour
                 debugColor = Color.red;
                 break;
             case EnemyState.Retreating:
-                Vector3 point = RandomPoint(transform.position, minRetreatRange, maxRetreatRange);
+                Vector3 point = RandomPoint(minRetreatRange, maxRetreatRange);
                 agent.SetDestination(point);
                 targetIndicator.position = point;
 
@@ -172,7 +171,7 @@ public class RandomEnemyMovement : MonoBehaviour
     {
         if (agent.remainingDistance <= agent.stoppingDistance) // Done with path
         {
-            Vector3 point = RandomPoint(transform.position, minPatrolingRange, maxPatrolingRange);
+            Vector3 point = RandomPoint(minPatrolingRange, maxPatrolingRange);
             agent.SetDestination(point);
             targetIndicator.position = point;
         }
@@ -192,7 +191,7 @@ public class RandomEnemyMovement : MonoBehaviour
         }
     }
 
-    Vector3 RandomPoint(Vector3 center, float minRange, float maxRange)
+    Vector3 RandomPoint(float minRange, float maxRange)
     {
         // Re-adds waypoints if there are no more left
         if (waypoints.Count == 0)

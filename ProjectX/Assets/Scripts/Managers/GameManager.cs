@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,10 +18,11 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            throw new InvalidOperationException("There can only be one TimeManager in the scene!");
+            Destroy(gameObject);
         }
 
         RandomEnemyMovement.OnPlayerCaught += PlayerDie;
@@ -29,6 +31,20 @@ public class GameManager : MonoBehaviour
         UIManager.OnNoteOverlayClosed += ResumeTime;
 
         PlayerMovement.OnPlayerFinish += LoadNextScene;
+    }
+
+    public void LoadNextScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    public void Quit()
+    {
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 
     void PlayerDie()
@@ -44,11 +60,6 @@ public class GameManager : MonoBehaviour
             default:
                 throw new InvalidOperationException("There is no gameplay scene with such name!");
         }
-    }
-
-    void LoadNextScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     void PauseTime()
