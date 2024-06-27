@@ -26,6 +26,8 @@ public class InputHandler : MonoBehaviour
 
     public static event Action OnNoteOverlayClose;
 
+    public static event Action OnPauseMenuOpen;
+
     [SerializeField]
     float openDoorRayMaxDist = 4f;
     [SerializeField]
@@ -94,6 +96,11 @@ public class InputHandler : MonoBehaviour
         else if (Input.GetKeyDown((KeyCode)InputValues.CloseNoteOverlay))
         {
             OnNoteOverlayClose?.Invoke();
+        }
+        else if (Input.GetKeyDown((KeyCode)InputValues.OpenPauseMenu))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            OnPauseMenuOpen?.Invoke();
         }
     }
 
@@ -192,5 +199,6 @@ public enum InputValues
     PickUp = KeyCode.E,
     OpenDoor = KeyCode.Q,
     CloseNoteOverlay = KeyCode.R,
+    OpenPauseMenu = KeyCode.Escape,
     ThrowKnife = 0
 }

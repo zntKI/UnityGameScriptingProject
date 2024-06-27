@@ -27,8 +27,8 @@ public class GameManager : MonoBehaviour
 
         RandomEnemyMovement.OnPlayerCaught += PlayerDie;
 
-        UIManager.OnNoteOverlayOpened += PauseTime;
-        UIManager.OnNoteOverlayClosed += ResumeTime;
+        UIManager.OnOverlayOpened += PauseTime;
+        UIManager.OnOverlayClosed += ResumeTime;
 
         PlayerMovement.OnPlayerFinish += LoadNextScene;
     }
@@ -64,6 +64,7 @@ public class GameManager : MonoBehaviour
 
     void PauseTime()
     {
+        Debug.Log("Paused time");
         Time.timeScale = 0f;
     }
 
@@ -76,7 +77,7 @@ public class GameManager : MonoBehaviour
     {
         RandomEnemyMovement.OnPlayerCaught -= PlayerDie;
 
-        UIManager.OnNoteOverlayOpened -= PauseTime;
-        UIManager.OnNoteOverlayClosed -= ResumeTime;
+        UIManager.OnOverlayOpened -= PauseTime;
+        UIManager.OnOverlayClosed -= ResumeTime;
     }
 }

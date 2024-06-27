@@ -11,12 +11,14 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance => instance;
     static UIManager instance;
 
-    public static event Action OnNoteOverlayOpened;
-    public static event Action OnNoteOverlayClosed;
+    public static event Action OnOverlayOpened;
+    public static event Action OnOverlayClosed;
 
 
     [Header("Common")]
 
+    [SerializeField]
+    Transform commonContainer;
     [SerializeField]
     TextMeshProUGUI timeText;
     [SerializeField]
@@ -33,6 +35,12 @@ public class UIManager : MonoBehaviour
     TextMeshProUGUI noteText;
     [SerializeField]
     TextMeshProUGUI noteCloseText;
+
+
+    [Header("Pause")]
+
+    [SerializeField]
+    Transform pauseMenu;
 
     const int startHour = 22;
 
@@ -54,11 +62,18 @@ public class UIManager : MonoBehaviour
 
         InventoryManager.OnNotePickedUp += ShowNoteOverlay;
         InputHandler.OnNoteOverlayClose += CloseNoteOverlay;
-        ShowNoteOverlay(noteText.text);
-        //OnNoteOverlayClosed?.Invoke(); // ONLY for DEBUG - REMOVE for RELEASE
 
         InputHandler.OnInteractionTextEnable += EnableInteractableText;
         InputHandler.OnInteractionTextDisable += DisableInteractableText;
+
+        InputHandler.OnPauseMenuOpen += ShowPauseMenu;
+    }
+
+    void Start()
+    {
+        ShowNoteOverlay(noteText.text);
+        //OnNoteOverlayClosed?.Invoke(); // ONLY for DEBUG - REMOVE for RELEASE
+
         DisableInteractableText();
     }
 
@@ -99,26 +114,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    void CloseNoteOverlay()
-    {
-        Debug.Log("Close note overlay");
-        if (noteOverlay.gameObject.activeSelf)
-        {
-            noteOverlay.gameObject.SetActive(false);
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                var child = transform.GetChild(i);
-                if (child != noteOverlay)
-                {
-                    child.gameObject.SetActive(true);
-                }
-            }
-        }
-
-        // Resume time
-        OnNoteOverlayClosed?.Invoke();
-    }
-
     void ShowNoteOverlay(string noteMessage)
     {
         Debug.Log("Open note overlay");
@@ -138,7 +133,75 @@ public class UIManager : MonoBehaviour
         }
 
         // Pause time
-        OnNoteOverlayOpened?.Invoke();
+        OnOverlayOpened?.Invoke();
+    }
+
+    void CloseNoteOverlay()
+    {
+        if (noteOverlay.gameObject.activeSelf)
+        {
+            Debug.Log("Close note overlay");
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var child = transform.GetChild(i);
+                if (child == commonContainer)
+                {
+                    child.gameObject.SetActive(true);
+                }
+                else
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
+
+            // Resume time
+            OnOverlayClosed?.Invoke();
+        }
+    }
+
+    void ShowPauseMenu()
+    {
+        if (!pauseMenu.gameObject.activeSelf)
+        {
+            Debug.Log("Open pause menu");
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var child = transform.GetChild(i);
+                if (child == pauseMenu)
+                {
+                    child.gameObject.SetActive(true);
+                }
+                else
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
+
+            // Pause time
+            OnOverlayOpened?.Invoke();
+        }
+    }
+
+    public void ClosePauseMenu()
+    {
+        Debug.Log("Close pause menu");
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var child = transform.GetChild(i);
+            if (child == commonContainer)
+            {
+                child.gameObject.SetActive(true);
+            }
+            else
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+
+        Cursor.lockState = CursorLockMode.Locked;
+
+        // Resume time
+        OnOverlayClosed?.Invoke();
     }
 
     void OnDestroy()
@@ -153,5 +216,7 @@ public class UIManager : MonoBehaviour
 
         InputHandler.OnInteractionTextEnable -= EnableInteractableText;
         InputHandler.OnInteractionTextDisable -= DisableInteractableText;
+
+        InputHandler.OnPauseMenuOpen -= ShowPauseMenu;
     }
 }
