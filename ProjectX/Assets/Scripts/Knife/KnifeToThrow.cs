@@ -7,7 +7,7 @@ public class KnifeToThrow : MonoBehaviour
 {
     public static event Action OnKnifeLauch; // If there was a knife to throw and the launch is successful
 
-    public static event Action OnHit;
+    public static event Action<Vector3> OnHit;
     public static event Action OnEnemyHit; // Different states in order to play different sounds on hit (change if the sound ends up being the same)
 
     [SerializeField]
@@ -50,7 +50,7 @@ public class KnifeToThrow : MonoBehaviour
                     }
                     break;
                 default:
-                    OnHit?.Invoke();
+                    OnHit?.Invoke(other.transform.position);
                     break;
             }
         }

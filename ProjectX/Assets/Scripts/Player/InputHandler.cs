@@ -32,8 +32,6 @@ public class InputHandler : MonoBehaviour
     float openDoorRayMaxDist = 4f;
     [SerializeField]
     float pickUpRayMaxDist = 2f;
-    [SerializeField]
-    float knifeThrowRayMaxDist = 6f;
 
     void Awake()
     {
@@ -84,14 +82,11 @@ public class InputHandler : MonoBehaviour
             OnInteractionTextDisable?.Invoke();
         }
 
+
+
         if (Input.GetMouseButtonDown((int)InputValues.ThrowKnife))
         {
-            if (Physics.Raycast(transform.position, transform.forward, out hit, knifeThrowRayMaxDist))
-                OnThrowKnife?.Invoke();
-            else
-            {
-                // TODO: Add an event that just plays a sound indicating that throwing is not possible
-            }
+            OnThrowKnife?.Invoke();
         }
         else if (Input.GetKeyDown((KeyCode)InputValues.CloseNoteOverlay))
         {

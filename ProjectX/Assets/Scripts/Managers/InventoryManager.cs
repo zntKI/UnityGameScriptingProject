@@ -60,7 +60,6 @@ public class InventoryManager : MonoBehaviour
         storyNotes.Add(message);
 
         // TODO: Play a sound
-        // TODO: Update UI
         OnNotePickedUp?.Invoke(message);
     }
 
@@ -70,7 +69,6 @@ public class InventoryManager : MonoBehaviour
         numOfKnives++;
 
         // TODO: Play a sound
-        // TODO: Update UI
         OnKnifePickedUp?.Invoke(numOfKnives);
     }
 
@@ -89,7 +87,6 @@ public class InventoryManager : MonoBehaviour
         Instantiate(knifePrefab, InputHandler.Player.transform.position + InputHandler.Player.transform.forward * 2f, InputHandler.Player.transform.rotation);
 
         // TODO: Play a sound
-        // TODO: Update UI
         OnThrownKnife?.Invoke(numOfKnives);
     }
 

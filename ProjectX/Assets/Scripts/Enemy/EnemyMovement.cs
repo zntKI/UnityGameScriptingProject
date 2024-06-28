@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -53,6 +54,12 @@ public class RandomEnemyMovement : MonoBehaviour
     float retreatingSpeedAddAmount = 10f;
 
 
+    [Header("KnifeReaction")]
+
+    [SerializeField]
+    float maxHearingDistance = 5f;
+
+
     [Header("TimePhaseVariables")]
 
     [SerializeField]
@@ -69,6 +76,7 @@ public class RandomEnemyMovement : MonoBehaviour
         TimeManager.OnTimePhaseChangeToGameOver += SetStateToTargeting;
 
         KnifeToThrow.OnEnemyHit += DamageEnemy;
+        KnifeToThrow.OnHit += AddressKnifeHit;
     }
 
     void Start()
@@ -218,13 +226,18 @@ public class RandomEnemyMovement : MonoBehaviour
         tempRemovedWaypoints.Add(rndWaypoint);
 
 
+        float waypointRadius = rndWaypoint.GetComponent<DebugDrawCircleRange>().Radius;
+        return NavMeshSamplePoint(rndWaypoint.position, waypointRadius);
+    }
+
+    Vector3 NavMeshSamplePoint(Vector3 center, float samplingRadius=1f)
+    {
         int countOut = 0;
 
-        float waypointRadius = rndWaypoint.GetComponent<DebugDrawCircleRange>().Radius;
         Vector3 randomPoint;
         while (true)
         {
-            randomPoint = rndWaypoint.position + UnityEngine.Random.insideUnitSphere * waypointRadius;
+            randomPoint = center + UnityEngine.Random.insideUnitSphere * samplingRadius;
 
             countOut++;
             if (countOut > 1000)
@@ -280,6 +293,18 @@ public class RandomEnemyMovement : MonoBehaviour
         }
     }
 
+    void AddressKnifeHit(Vector3 hitPos)
+    {
+        if (state == EnemyState.Patrolling
+            && Vector3.Distance(hitPos, transform.position) <= maxHearingDistance)
+        {
+            Debug.Log("Enemy distracted");
+            Vector3 point = NavMeshSamplePoint(hitPos);
+            agent.SetDestination(point);
+            targetIndicator.position = point;
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.transform == player)
@@ -295,6 +320,7 @@ public class RandomEnemyMovement : MonoBehaviour
         TimeManager.OnTimePhaseChangeToGameOver -= SetStateToTargeting;
 
         KnifeToThrow.OnEnemyHit -= DamageEnemy;
+        KnifeToThrow.OnHit -= AddressKnifeHit;
     }
 }
 
