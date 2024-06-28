@@ -10,7 +10,7 @@ public class DoorObstacleHandler : MonoBehaviour
 
     NavMeshObstacle meshObstacle;
 
-    BoxCollider normalCollider;
+    MeshCollider normalCollider;
 
     void Awake()
     {
@@ -22,7 +22,7 @@ public class DoorObstacleHandler : MonoBehaviour
         meshObstacle = GetComponent<NavMeshObstacle>();
         doorControl = transform.parent.GetComponent<DoorControl>();
 
-        normalCollider = GetComponents<BoxCollider>().First(c => !c.isTrigger);
+        normalCollider = GetComponent<MeshCollider>();
     }
 
     void DisableObstacleComponent()
