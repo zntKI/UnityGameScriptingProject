@@ -10,8 +10,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance => instance;
     static GameManager instance;
 
+    const string sceneStartManuName = "MenuScreen";
     const string scene1Name = "Level1";
     const string scene2Name = "Level2";
+    const string sceneGameEndName = "GameEndScreen";
 
     void Awake()
     {
@@ -35,7 +37,13 @@ public class GameManager : MonoBehaviour
 
     public void LoadNextScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        int sceneBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        if (sceneBuildIndex >= SceneManager.sceneCountInBuildSettings)
+        {
+            sceneBuildIndex = 0;
+        }
+        
+        SceneManager.LoadScene(sceneBuildIndex);
     }
 
     public void Quit()
@@ -52,10 +60,11 @@ public class GameManager : MonoBehaviour
         switch (SceneManager.GetActiveScene().name)
         {
             case scene1Name:
-                SceneManager.LoadScene(scene1Name); // TODO: Change to start menu when available
+                SceneManager.LoadScene(sceneStartManuName);
                 break;
-            case scene2Name:
-                SceneManager.LoadScene(scene2Name);
+            case scene2Name: // Load GameOverScene
+                LoadNextScene();
+                EndScreenUIController.IsGameOver = true;
                 break;
             default:
                 throw new InvalidOperationException("There is no gameplay scene with such name!");

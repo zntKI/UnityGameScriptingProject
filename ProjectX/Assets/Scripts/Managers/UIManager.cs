@@ -161,7 +161,7 @@ public class UIManager : MonoBehaviour
 
     void ShowPauseMenu()
     {
-        if (!pauseMenu.gameObject.activeSelf)
+        if (!pauseMenu.gameObject.activeSelf && !noteOverlay.gameObject.activeSelf)
         {
             Debug.Log("Open pause menu");
             for (int i = 0; i < transform.childCount; i++)
@@ -176,6 +176,8 @@ public class UIManager : MonoBehaviour
                     child.gameObject.SetActive(false);
                 }
             }
+
+            Cursor.lockState = CursorLockMode.None;
 
             // Pause time
             OnOverlayOpened?.Invoke();

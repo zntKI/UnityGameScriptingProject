@@ -99,7 +99,6 @@ public class InputHandler : MonoBehaviour
         }
         else if (Input.GetKeyDown((KeyCode)InputValues.OpenPauseMenu))
         {
-            Cursor.lockState = CursorLockMode.None;
             OnPauseMenuOpen?.Invoke();
         }
     }
