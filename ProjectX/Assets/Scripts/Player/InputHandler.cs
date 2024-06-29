@@ -63,38 +63,49 @@ public class InputHandler : MonoBehaviour
     {
         //Debug.DrawRay(cameraTransform.position, cameraTransform.forward * pickUpRayMaxDist, Color.blue);
 
-        RaycastHit hit;
-        // Order of statements MATTERS (ray max dist)!
-        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, pickUpRayMaxDist)
-            && (hit.transform.CompareTag("Key")
-            || hit.transform.CompareTag("Note")
-            || hit.transform.CompareTag("Knife")))
+        switch (UIManager.State)
         {
-            CheckForInteractables(hit.transform);
-        }
-        else if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, openDoorRayMaxDist)
-            && hit.transform.CompareTag("Door"))
-        {
-            CheckDoorType(hit.transform);
-        }
-        else
-        {
-            OnInteractionTextDisable?.Invoke();
-        }
+            case UIState.HUD:
 
+                RaycastHit hit;
+                // Order of statements MATTERS (ray max dist)!
+                if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, pickUpRayMaxDist)
+                    && (hit.transform.CompareTag("Key")
+                    || hit.transform.CompareTag("Note")
+                    || hit.transform.CompareTag("Knife")))
+                {
+                    CheckForInteractables(hit.transform);
+                }
+                else if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, openDoorRayMaxDist)
+                    && hit.transform.CompareTag("Door"))
+                {
+                    CheckDoorType(hit.transform);
+                }
+                else
+                {
+                    OnInteractionTextDisable?.Invoke();
+                }
 
+                if (Input.GetMouseButtonDown((int)InputValues.ThrowKnife))
+                {
+                    OnThrowKnife?.Invoke();
+                }
+                else if (Input.GetKeyDown((KeyCode)InputValues.OpenPauseMenu))
+                {
+                    OnPauseMenuOpen?.Invoke();
+                }
 
-        if (Input.GetMouseButtonDown((int)InputValues.ThrowKnife))
-        {
-            OnThrowKnife?.Invoke();
-        }
-        else if (Input.GetKeyDown((KeyCode)InputValues.CloseNoteOverlay))
-        {
-            OnNoteOverlayClose?.Invoke();
-        }
-        else if (Input.GetKeyDown((KeyCode)InputValues.OpenPauseMenu))
-        {
-            OnPauseMenuOpen?.Invoke();
+                break;
+            case UIState.NoteOverlay:
+
+                if (Input.GetKeyDown((KeyCode)InputValues.CloseNoteOverlay))
+                {
+                    OnNoteOverlayClose?.Invoke();
+                }
+
+                break;
+            default:
+                break;
         }
     }
 

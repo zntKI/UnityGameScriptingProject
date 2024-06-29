@@ -11,6 +11,9 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance => instance;
     static UIManager instance;
 
+    public static UIState State => instance.state;
+    UIState state;
+
     public static event Action OnOverlayOpened;
     public static event Action OnOverlayClosed;
 
@@ -71,8 +74,10 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
+        state = UIState.HUD;
+
         ShowNoteOverlay(noteText.text);
-        //OnNoteOverlayClosed?.Invoke(); // ONLY for DEBUG - REMOVE for RELEASE
+        OnOverlayClosed?.Invoke(); // So that the NavMeshAgent finds its path!!!
 
         DisableInteractableText();
     }
@@ -100,7 +105,6 @@ public class UIManager : MonoBehaviour
         if (interactableText.text == "")
         {
             //Debug.Log("Enabled interactable text");
-
             interactableText.text = $"{message} ({inputValue})";
         }
     }
@@ -116,6 +120,8 @@ public class UIManager : MonoBehaviour
 
     void ShowNoteOverlay(string noteMessage)
     {
+        state = UIState.NoteOverlay;
+
         Debug.Log("Open note overlay");
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -138,6 +144,8 @@ public class UIManager : MonoBehaviour
 
     void CloseNoteOverlay()
     {
+        state = UIState.HUD;
+
         if (noteOverlay.gameObject.activeSelf)
         {
             Debug.Log("Close note overlay");
@@ -161,6 +169,8 @@ public class UIManager : MonoBehaviour
 
     void ShowPauseMenu()
     {
+        state = UIState.PauseOverlay;
+
         if (!pauseMenu.gameObject.activeSelf && !noteOverlay.gameObject.activeSelf)
         {
             Debug.Log("Open pause menu");
@@ -186,6 +196,8 @@ public class UIManager : MonoBehaviour
 
     public void ClosePauseMenu()
     {
+        state = UIState.HUD;
+
         Debug.Log("Close pause menu");
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -221,4 +233,9 @@ public class UIManager : MonoBehaviour
 
         InputHandler.OnPauseMenuOpen -= ShowPauseMenu;
     }
+}
+
+public enum UIState
+{
+    HUD, NoteOverlay, PauseOverlay
 }

@@ -195,6 +195,10 @@ PrefabInstance:
       propertyPath: radius
       value: 1.19
       objectReference: {fileID: 0}
+    - target: {fileID: 6296043943644710289, guid: c1208331c2ce10b4b81229acea9ec6fe, type: 3}
+      propertyPath: shouldDraw
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7845965092671140340, guid: c1208331c2ce10b4b81229acea9ec6fe, type: 3}
       propertyPath: m_Name
       value: Waypoint

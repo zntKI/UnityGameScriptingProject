@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5780368457438473979
 MonoBehaviour:
@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba89e5ce9091aa2408cdb6869d1689f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  knifePrefab: {fileID: 3536011888727496945, guid: 2df009194a70af441aff880aad594090, type: 3}
+  knifePrefab: {fileID: 4852776657851493466, guid: 1afa52169fe5cc342a67e2bb05388940, type: 3}

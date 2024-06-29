@@ -8,6 +8,9 @@ public class DebugDrawCircleRange : MonoBehaviour
 
     Vector3 center;
 
+    [SerializeField]
+    bool shouldDraw = false;
+
     [Header("Circle")]
     [SerializeField]
     float radius = 5f; // Radius of the circle
@@ -21,8 +24,11 @@ public class DebugDrawCircleRange : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        center = this.transform.position;
-        DrawCircle(center, radius, segments, color, duration);
+        if (shouldDraw)
+        {
+            center = this.transform.position;
+            DrawCircle(center, radius, segments, color, duration);
+        }
     }
 
     void DrawCircle(Vector3 center, float radius, int segments, Color color, float duration)

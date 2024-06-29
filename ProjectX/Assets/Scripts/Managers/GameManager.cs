@@ -88,5 +88,7 @@ public class GameManager : MonoBehaviour
 
         UIManager.OnOverlayOpened -= PauseTime;
         UIManager.OnOverlayClosed -= ResumeTime;
+
+        PlayerMovement.OnPlayerFinish -= LoadNextScene;
     }
 }

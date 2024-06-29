@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -138,7 +139,7 @@ public class RandomEnemyMovement : MonoBehaviour
                 debugColor = Color.white;
                 break;
         }
-        GetComponent<MeshRenderer>().material.color = debugColor;
+        //GetComponent<MeshRenderer>().material.color = debugColor;
     }
 
     void Update()
@@ -199,8 +200,19 @@ public class RandomEnemyMovement : MonoBehaviour
         }
     }
 
+    //int count = 0;
     Vector3 RandomPoint(float minRange, float maxRange)
     {
+//        Debug.Log("In");
+//        count++;
+//        if (count >= 10)
+//        {
+//            Debug.Log("ShouldQuit");
+//#if UNITY_EDITOR
+//            EditorApplication.isPlaying = false;
+//#endif
+//        }
+
         // Re-adds waypoints if there are no more left
         if (waypoints.Count == 0)
         {
