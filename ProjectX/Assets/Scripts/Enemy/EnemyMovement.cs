@@ -282,6 +282,7 @@ public class RandomEnemyMovement : MonoBehaviour
     void SetStateToTargeting()
     {
         Debug.Log($"GameOver - Enemy chasing the Player!");
+        agent.speed += fasterMoveSpeedAddAmount;
         SetState(EnemyState.Targeting);
     }
 

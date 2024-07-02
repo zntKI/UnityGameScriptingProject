@@ -11,9 +11,7 @@ public class InputHandler : MonoBehaviour
 
     Transform cameraTransform;
 
-    public static event Action OnDoorUnlock;
-    public static event Action OnDoorLocked;
-    public static event Action OnDoorOpen;
+    public static event Action<GameObject> OnDoorInteraction;
 
     public static event Action<int> OnKeyPickup;
     public static event Action<string> OnNotePickup;
@@ -114,39 +112,14 @@ public class InputHandler : MonoBehaviour
     /// </summary>
     void CheckDoorType(Transform obj)
     {
-        string interactableMessage = obj.parent.GetComponent<DoorControl>().IsOpen ? "Close" : "Open" + " door";
+        DoorControl doorControl = obj.parent.GetComponent<DoorControl>();
+
+        string interactableMessage = doorControl.IsOpen ? "Close" : "Open" + " door";
         OnInteractionTextEnable?.Invoke(interactableMessage, (KeyCode)InputValues.OpenDoor);
 
         if (Input.GetKeyDown((KeyCode)InputValues.OpenDoor))
         {
-            var keyDoorComponent = obj.GetComponent<KeyDoor>();
-
-            if (keyDoorComponent == null)
-            {
-                Debug.Log("No key door");
-
-                obj.parent.GetComponent<DoorControl>().HandleDoorInteraction();
-                OnDoorOpen?.Invoke(); // Play a sound
-            }
-            else
-            {
-                Debug.Log("Key door");
-
-                if (InventoryManager.ContainsTheRightKey(keyDoorComponent.Id))
-                {
-                    Debug.Log("Unlocked door");
-
-                    OnDoorUnlock?.Invoke(); // Play a sound
-                    obj.parent.GetComponent<DoorControl>().HandleDoorInteraction(); // TODO: Maybe add the option to be able to wait for a few seconds so that the previous sound could be played
-                    OnDoorOpen?.Invoke(); // Play a sound
-                }
-                else
-                {
-                    Debug.Log("No key for that door");
-
-                    OnDoorLocked?.Invoke(); // Play a sound
-                }
-            }
+            OnDoorInteraction?.Invoke(doorControl.gameObject);
         }
     }
 
@@ -171,6 +144,7 @@ public class InputHandler : MonoBehaviour
 
         if (Input.GetKeyDown((KeyCode)InputValues.PickUp))
         {
+            // TODO: Move to InventoryManager
             switch (obj.tag)
             {
                 case "Key":

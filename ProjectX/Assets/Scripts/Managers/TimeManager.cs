@@ -11,6 +11,8 @@ public class TimeManager : MonoBehaviour
     public static TimePhase TimePhase => instance.timePhase;
     TimePhase timePhase = TimePhase.Early;
 
+    public static event Action OnTimePhaseChange;
+
     public static event Action OnTimePhaseChangeToMid;
     public static event Action OnTimePhaseChangeToEnd;
     public static event Action OnTimePhaseChangeToGameOver;
@@ -61,7 +63,7 @@ public class TimeManager : MonoBehaviour
                 OnMinutePassed?.Invoke(minCounter);
 
                 minPhaseCounter++;
-                if (minPhaseCounter > phaseTimeMinutes)
+                if (minPhaseCounter >= phaseTimeMinutes)
                     SetTimePhase();
 
                 timeCounter = 0;
@@ -78,6 +80,7 @@ public class TimeManager : MonoBehaviour
         }
 
         Debug.Log($"Changed time phase to: {timePhase}");
+        OnTimePhaseChange?.Invoke();
 
         minPhaseCounter = 0;
 
