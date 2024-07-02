@@ -21,6 +21,8 @@ public class AudioManager : MonoBehaviour
     AudioClip endBgMusic;
     [SerializeField]
     AudioClip gameOverBgMusic;
+    [SerializeField]
+    AudioClip enemyTargetingBgMusic;
 
     [SerializeField]
     [Range(0f, 1f)]
@@ -44,6 +46,10 @@ public class AudioManager : MonoBehaviour
     AudioClip keyPickUpSound;
     [SerializeField]
     AudioClip knifeUnableToThrowSound;
+    [Space]
+
+    [SerializeField]
+    AudioClip warningSound;
 
     void Awake()
     {
@@ -58,6 +64,9 @@ public class AudioManager : MonoBehaviour
         InventoryManager.OnUnableToThrowKnife += PlayUnableToThrowKnifeSound;
 
         InputHandler.OnNoteOverlayClose += PlayNoteCollapseSound;
+
+        RandomEnemyMovement.OnEnemyTargeting += ChangeBgMusicToEnemyTargeting;
+        RandomEnemyMovement.OnEnemyDistracted += PlayWarningSound;
     }
 
     void Start()
@@ -96,6 +105,12 @@ public class AudioManager : MonoBehaviour
         audioSourceSFX.Play();
     }
 
+    void PlayWarningSound()
+    {
+        audioSourceSFX.clip = warningSound;
+        audioSourceSFX.Play();
+    }
+
     void ChangeBgMusicToMid()
     {
         SetupAudioSource(midBgMusic);
@@ -115,6 +130,13 @@ public class AudioManager : MonoBehaviour
         SetupAudioSource(gameOverBgMusic);
 
         audioSourceBG.PlayDelayed(2);
+    }
+
+    void ChangeBgMusicToEnemyTargeting()
+    {
+        SetupAudioSource(enemyTargetingBgMusic);
+
+        audioSourceBG.Play();
     }
 
     void SetupAudioSource(AudioClip clipToPlayNext)

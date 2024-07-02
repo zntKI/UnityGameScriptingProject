@@ -17,6 +17,9 @@ public class RandomEnemyMovement : MonoBehaviour
 
     public static event Action OnPlayerCaught;
 
+    public static event Action OnEnemyTargeting;
+    public static event Action OnEnemyDistracted;
+
     public EnemyState State => state;
     EnemyState state;
 
@@ -66,6 +69,9 @@ public class RandomEnemyMovement : MonoBehaviour
     [SerializeField]
     float fasterMoveSpeedAddAmount = 5f;
 
+
+    EnemySoundHandler soundHandler;
+
     void Awake()
     {
         if (instance == null)
@@ -91,6 +97,8 @@ public class RandomEnemyMovement : MonoBehaviour
         tempRemovedWaypoints = new List<Transform>();
 
         SetState(EnemyState.Patrolling);
+
+        soundHandler = GetComponent<EnemySoundHandler>();
     }
 
     void SetState(EnemyState newState)
@@ -121,6 +129,8 @@ public class RandomEnemyMovement : MonoBehaviour
                 break;
             case EnemyState.Targeting:
                 agent.speed += targetingSpeedAddAmount;
+
+                OnEnemyTargeting?.Invoke();
 
                 debugColor = Color.red;
                 break;
@@ -282,7 +292,7 @@ public class RandomEnemyMovement : MonoBehaviour
     void SetStateToTargeting()
     {
         Debug.Log($"GameOver - Enemy chasing the Player!");
-        agent.speed += fasterMoveSpeedAddAmount;
+        //agent.speed += fasterMoveSpeedAddAmount;
         SetState(EnemyState.Targeting);
     }
 
@@ -295,10 +305,16 @@ public class RandomEnemyMovement : MonoBehaviour
         {
             case EnemyState.Patrolling:
                 Debug.Log("Hit enemy while patrolling");
+
+                soundHandler.PlayHitWhilePatrolingSound();
+
                 SetState(EnemyState.Targeting);
                 break;
             case EnemyState.Targeting:
                 Debug.Log("Hit enemy while targeting");
+
+                soundHandler.PlayHitWhileTargetingSound();
+
                 SetState(EnemyState.Retreating);
                 break;
             default:
@@ -312,6 +328,9 @@ public class RandomEnemyMovement : MonoBehaviour
             && Vector3.Distance(hitPos, transform.position) <= maxHearingDistance)
         {
             Debug.Log("Enemy distracted");
+
+            OnEnemyDistracted?.Invoke();
+
             Vector3 point = NavMeshSamplePoint(hitPos);
             agent.SetDestination(point);
             targetIndicator.position = point;
