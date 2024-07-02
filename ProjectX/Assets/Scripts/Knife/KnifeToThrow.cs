@@ -5,24 +5,37 @@ using UnityEngine;
 
 public class KnifeToThrow : MonoBehaviour
 {
-    public static event Action OnKnifeLauch; // If there was a knife to throw and the launch is successful
-
     public static event Action<Vector3> OnHit;
-    public static event Action OnEnemyHit; // Different states in order to play different sounds on hit (change if the sound ends up being the same)
+    public static event Action OnEnemyHit;
 
     [SerializeField]
     float speed = 5f;
+
+    [Header("Sound")]
+
+    [SerializeField]
+    AudioClip knifeThrowSound;
+    [SerializeField]
+    AudioClip knifeWoodHitSound;
+    [SerializeField]
+    AudioClip knifeHitEnemyPatrolingSound;
+    [SerializeField]
+    AudioClip knifeHitEnemyTargetingSOund;
+
+    AudioSource audioSource;
 
     Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
 
+        rb = GetComponent<Rigidbody>();
         rb.velocity = transform.forward * speed;
 
-        OnKnifeLauch?.Invoke();
+        audioSource.clip = knifeThrowSound;
+        audioSource.Play();
     }
 
     /// <summary>
@@ -40,21 +53,38 @@ public class KnifeToThrow : MonoBehaviour
                     switch (RandomEnemyMovement.Instance.State)
                     {
                         case EnemyState.Patrolling:
-                            OnEnemyHit?.Invoke();
+                            audioSource.clip = knifeHitEnemyPatrolingSound;
+                            audioSource.Play();
                             break;
                         case EnemyState.Targeting:
-                            OnEnemyHit?.Invoke();
+                            audioSource.clip = knifeHitEnemyTargetingSOund;
+                            audioSource.Play();
                             break;
                         default:
                             break;
                     }
+                    OnEnemyHit?.Invoke();
                     break;
                 default:
+                    Debug.Log("Knife hit wood");
+
+                    audioSource.clip = knifeWoodHitSound;
+                    audioSource.Play();
+
                     OnHit?.Invoke(other.transform.position);
                     break;
             }
-        }
 
+            rb.velocity = Vector3.zero;
+            GetComponent<MeshRenderer>().enabled = false;
+            Invoke(nameof(DestroyAfterSoundIsPlayed), audioSource.clip.length);
+        }
+        else
+            Destroy(gameObject);
+    }
+
+    void DestroyAfterSoundIsPlayed()
+    {
         Destroy(gameObject);
     }
 }

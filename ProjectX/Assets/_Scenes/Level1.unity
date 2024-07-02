@@ -15610,7 +15610,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1577643761317990549, guid: 7ed84b00d06b67c4b818be57cb022deb, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1930805109325487453, guid: 7ed84b00d06b67c4b818be57cb022deb, type: 3}
       propertyPath: targetIndicator
@@ -21460,6 +21460,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1644775003}
   - component: {fileID: 1644775006}
+  - component: {fileID: 1644775007}
   - component: {fileID: 1644775004}
   m_Layer: 0
   m_Name: AudioManager
@@ -21495,11 +21496,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acba5b9f5eeb4154c9b078bc5ce39f35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSourceBG: {fileID: 1644775006}
   startBgMusic: {fileID: 8300000, guid: ab8842b42fcaba04193bd8bc50c78cbf, type: 3}
   midBgMusic: {fileID: 8300000, guid: ab63369db59adbf46b2761daeeebe63c, type: 3}
   endBgMusic: {fileID: 8300000, guid: 85d9ce10089b6b44fa191f403fc494c3, type: 3}
   gameOverBgMusic: {fileID: 8300000, guid: 10546d9649879d14e8277d84c34d122e, type: 3}
   startVolume: 0.8
+  audioSourceSFX: {fileID: 1644775007}
+  notePickUpSound: {fileID: 8300000, guid: 9008712b2c5a7304faa6403a34485115, type: 3}
+  collapseNoteSound: {fileID: 8300000, guid: e9ed9f26b47481842b533265e6b87eea, type: 3}
+  knifePickUpSound: {fileID: 8300000, guid: b3908c32ea9b71a4d91f50fcc39b3628, type: 3}
+  keyPickUpSound: {fileID: 8300000, guid: ced3a624b20f1ad4d9a5aed542cffeed, type: 3}
+  knifeUnableToThrowSound: {fileID: 8300000, guid: 2e0934140696404499dce4bf11fa83ba, type: 3}
 --- !u!82 &1644775006
 AudioSource:
   m_ObjectHideFlags: 0
@@ -21515,6 +21523,102 @@ AudioSource:
   m_Volume: 0.8
   m_Pitch: 1
   Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &1644775007
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644775002}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

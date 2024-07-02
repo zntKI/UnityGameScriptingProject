@@ -6,6 +6,13 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    [Header("BG Music")]
+    [Space]
+
+    [SerializeField]
+    AudioSource audioSourceBG;
+    [Space]
+
     [SerializeField]
     AudioClip startBgMusic;
     [SerializeField]
@@ -19,55 +26,108 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)]
     float startVolume = .6f;
 
-    AudioSource audioSource;
+
+    [Header("Pick up sfx")]
+    [Space]
+
+    [SerializeField]
+    AudioSource audioSourceSFX;
+    [Space]
+
+    [SerializeField]
+    AudioClip notePickUpSound;
+    [SerializeField]
+    AudioClip collapseNoteSound;
+    [SerializeField]
+    AudioClip knifePickUpSound;
+    [SerializeField]
+    AudioClip keyPickUpSound;
+    [SerializeField]
+    AudioClip knifeUnableToThrowSound;
 
     void Awake()
     {
         TimeManager.OnTimePhaseChangeToMid += ChangeBgMusicToMid;
         TimeManager.OnTimePhaseChangeToEnd += ChangeBgMusicToEnd;
         TimeManager.OnTimePhaseChangeToGameOver += ChangeBgMusicToGameOver;
+
+        InventoryManager.OnKeyPickedUp += PlayKeyPickUpSound;
+        InventoryManager.OnNotePickedUp += PlayNotePickUpSound;
+        InventoryManager.OnKnifePickedUp += PlayKnifePickUpSound;
+
+        InventoryManager.OnUnableToThrowKnife += PlayUnableToThrowKnifeSound;
+
+        InputHandler.OnNoteOverlayClose += PlayNoteCollapseSound;
     }
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        audioSourceBG.clip = startBgMusic;
+        audioSourceBG.Play();
+    }
 
-        audioSource.clip = startBgMusic;
-        audioSource.Play();
+    void PlayKnifePickUpSound(int obj)
+    {
+        audioSourceSFX.clip = knifePickUpSound;
+        audioSourceSFX.Play();
+    }
+
+    void PlayNotePickUpSound(string obj)
+    {
+        audioSourceSFX.clip = notePickUpSound;
+        audioSourceSFX.Play();
+    }
+
+    void PlayNoteCollapseSound()
+    {
+        audioSourceSFX.clip = collapseNoteSound;
+        audioSourceSFX.Play();
+    }
+
+    void PlayKeyPickUpSound()
+    {
+        audioSourceSFX.clip = keyPickUpSound;
+        audioSourceSFX.Play();
+    }
+
+    void PlayUnableToThrowKnifeSound()
+    {
+        audioSourceSFX.clip = knifeUnableToThrowSound;
+        audioSourceSFX.Play();
     }
 
     void ChangeBgMusicToMid()
     {
         SetupAudioSource(midBgMusic);
 
-        audioSource.Play();
+        audioSourceBG.Play();
     }
 
     void ChangeBgMusicToEnd()
     {
         SetupAudioSource(endBgMusic);
 
-        audioSource.Play();
+        audioSourceBG.Play();
     }
 
     void ChangeBgMusicToGameOver()
     {
         SetupAudioSource(gameOverBgMusic);
 
-        audioSource.PlayDelayed(2);
+        audioSourceBG.PlayDelayed(2);
     }
 
     void SetupAudioSource(AudioClip clipToPlayNext)
     {
-        audioSource.Stop();
-        audioSource.clip = clipToPlayNext;
-        audioSource.volume = startVolume;
+        audioSourceBG.Stop();
+        audioSourceBG.clip = clipToPlayNext;
+        audioSourceBG.volume = startVolume;
     }
 
     void Update()
     {
-        audioSource.volume += Time.deltaTime / 10;
-        Mathf.Clamp(audioSource.volume, 0f, 1f);
+        audioSourceBG.volume += Time.deltaTime / 10;
+        Mathf.Clamp(audioSourceBG.volume, 0f, 1f);
     }
 
     void OnDestroy()
@@ -75,5 +135,11 @@ public class AudioManager : MonoBehaviour
         TimeManager.OnTimePhaseChangeToMid -= ChangeBgMusicToMid;
         TimeManager.OnTimePhaseChangeToEnd -= ChangeBgMusicToEnd;
         TimeManager.OnTimePhaseChangeToGameOver -= ChangeBgMusicToGameOver;
+
+        InventoryManager.OnKeyPickedUp -= PlayKeyPickUpSound;
+        InventoryManager.OnNotePickedUp -= PlayNotePickUpSound;
+        InventoryManager.OnKnifePickedUp -= PlayKnifePickUpSound;
+
+        InputHandler.OnNoteOverlayClose -= PlayNoteCollapseSound;
     }
 }

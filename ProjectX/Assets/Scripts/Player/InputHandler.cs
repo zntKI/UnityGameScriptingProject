@@ -13,9 +13,7 @@ public class InputHandler : MonoBehaviour
 
     public static event Action<GameObject> OnDoorInteraction;
 
-    public static event Action<int> OnKeyPickup;
-    public static event Action<string> OnNotePickup;
-    public static event Action OnKnifePickup;
+    public static event Action<Transform> OnPickUp;
 
     public static event Action OnThrowKnife;
 
@@ -144,31 +142,7 @@ public class InputHandler : MonoBehaviour
 
         if (Input.GetKeyDown((KeyCode)InputValues.PickUp))
         {
-            // TODO: Move to InventoryManager
-            switch (obj.tag)
-            {
-                case "Key":
-                    var keyDoorComponent = obj.GetComponent<KeyDoor>();
-                    if (keyDoorComponent == null)
-                        throw new InvalidOperationException("Key must have a KeyDoor script component!");
-
-                    OnKeyPickup?.Invoke(keyDoorComponent.Id);
-                    break;
-                case "Note":
-                    var noteComponent = obj.gameObject.GetComponent<Note>();
-                    if (noteComponent == null)
-                        throw new InvalidOperationException("Note must have a Note script component!");
-
-                    OnNotePickup?.Invoke(noteComponent.Text);
-                    break;
-                case "Knife":
-                    OnKnifePickup?.Invoke();
-                    break;
-                default:
-                    return;
-            }
-
-            Destroy(obj.gameObject);
+            OnPickUp?.Invoke(obj);
         }
     }
 }

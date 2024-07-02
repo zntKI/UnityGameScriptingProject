@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
@@ -12,6 +13,7 @@ public class InventoryManager : MonoBehaviour
     public static event Action<string> OnNotePickedUp;
     public static event Action<int> OnKnifePickedUp;
 
+    public static event Action OnUnableToThrowKnife;
     public static event Action<int> OnThrownKnife;
 
     [SerializeField]
@@ -35,9 +37,7 @@ public class InventoryManager : MonoBehaviour
         keys = new List<int>();
         storyNotes = new List<string>();
 
-        InputHandler.OnKeyPickup += PickUpKey;
-        InputHandler.OnNotePickup += PickUpStoryNote;
-        InputHandler.OnKnifePickup += PickUpKnife;
+        InputHandler.OnPickUp += HandlePickup;
 
         InputHandler.OnThrowKnife += ThrowKnife;
     }
@@ -45,31 +45,41 @@ public class InventoryManager : MonoBehaviour
     public static bool ContainsTheRightKey(int doorId)
         => instance.keys.Contains(doorId);
 
-    void PickUpKey(int keyId)
+    void HandlePickup(Transform pickup)
     {
-        Debug.Log("Picked up key");
-        keys.Add(keyId);
+        switch (pickup.tag)
+        {
+            case "Key":
+                var keyDoorComponent = pickup.GetComponent<KeyDoor>();
+                if (keyDoorComponent == null)
+                    throw new InvalidOperationException("Key must have a KeyDoor script component!");
 
-        // TODO: Play a sound
-        OnKeyPickedUp?.Invoke();
-    }
+                Debug.Log("Picked up key");
+                keys.Add(keyDoorComponent.Id);
 
-    void PickUpStoryNote(string message)
-    {
-        Debug.Log("Picked up story note");
-        storyNotes.Add(message);
+                OnKeyPickedUp?.Invoke();
+                break;
+            case "Note":
+                var noteComponent = pickup.gameObject.GetComponent<Note>();
+                if (noteComponent == null)
+                    throw new InvalidOperationException("Note must have a Note script component!");
 
-        // TODO: Play a sound
-        OnNotePickedUp?.Invoke(message);
-    }
+                Debug.Log("Picked up story note");
+                storyNotes.Add(noteComponent.Text);
 
-    void PickUpKnife()
-    {
-        Debug.Log("Picked up knife");
-        numOfKnives++;
+                OnNotePickedUp?.Invoke(noteComponent.Text);
+                break;
+            case "Knife":
+                Debug.Log("Picked up knife");
+                numOfKnives++;
 
-        // TODO: Play a sound
-        OnKnifePickedUp?.Invoke(numOfKnives);
+                OnKnifePickedUp?.Invoke(numOfKnives);
+                break;
+            default:
+                return;
+        }
+
+        Destroy(pickup.gameObject);
     }
 
     void ThrowKnife()
@@ -77,6 +87,8 @@ public class InventoryManager : MonoBehaviour
         if (numOfKnives == 0)
         {
             Debug.Log("Do not have a knife to throw");
+
+            OnUnableToThrowKnife?.Invoke();
             return;
         }
 
@@ -86,15 +98,12 @@ public class InventoryManager : MonoBehaviour
         // Spawn a knife
         Instantiate(knifePrefab, InputHandler.Player.transform.position + InputHandler.Player.transform.forward * 2f, InputHandler.Player.transform.rotation);
 
-        // TODO: Play a sound
         OnThrownKnife?.Invoke(numOfKnives);
     }
 
     void OnDestroy()
     {
-        InputHandler.OnKeyPickup -= PickUpKey;
-        InputHandler.OnNotePickup -= PickUpStoryNote;
-        InputHandler.OnKnifePickup -= PickUpKnife;
+        InputHandler.OnPickUp -= HandlePickup;
 
         InputHandler.OnThrowKnife -= ThrowKnife;
     }
