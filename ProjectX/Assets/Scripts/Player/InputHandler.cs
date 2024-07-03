@@ -50,8 +50,6 @@ public class InputHandler : MonoBehaviour
 
     void Update()
     {
-        //Debug.DrawRay(cameraTransform.position, cameraTransform.forward * pickUpRayMaxDist, Color.blue);
-
         switch (UIManager.State)
         {
             case UIState.HUD:

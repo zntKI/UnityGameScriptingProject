@@ -27,10 +27,6 @@ public class EnemySoundHandler : MonoBehaviour
     [SerializeField]
     AudioClip enemyHitWhileTargetingSound;
 
-    void Start()
-    {
-    }
-
     public void PlayHitWhilePatrolingSound()
     {
         audioSourceSFX.clip = enemyHitWhilePatrolingSound;
@@ -46,7 +42,6 @@ public class EnemySoundHandler : MonoBehaviour
     public void PlayFootStepSound()
     {
         AudioClip footStepSound = footStepSounds[Random.Range(0, footStepSounds.Length)];
-        //audioSourceFootsteps.pitch = 1 + (Random.value * 2 - 1);
         audioSourceFootsteps.PlayOneShot(footStepSound);
     }
 }

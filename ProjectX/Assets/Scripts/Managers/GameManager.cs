@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
     const string sceneStartManuName = "MenuScreen";
     const string scene1Name = "Level1";
     const string scene2Name = "Level2";
-    const string sceneGameEndName = "GameEndScreen";
 
     void Awake()
     {
@@ -110,6 +109,9 @@ public class GameManager : MonoBehaviour
 
         UIManager.OnOverlayOpened -= PauseTime;
         UIManager.OnOverlayClosed -= ResumeTime;
+
+        UIManager.OnMouseSensitivityChanged -= ChangeMouseSens;
+        UIManager.OnVolumeChanged -= ChangeVolume;
 
         PlayerMovement.OnPlayerFinish -= LoadNextScene;
     }

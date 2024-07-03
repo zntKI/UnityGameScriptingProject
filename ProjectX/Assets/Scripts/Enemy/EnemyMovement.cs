@@ -9,9 +9,6 @@ using UnityEngine.AI;
 
 public class RandomEnemyMovement : MonoBehaviour
 {
-    // TODOs:
-    //  Make the enemy switch state to patrolling when having lost sight of the player 
-
     public static RandomEnemyMovement Instance => instance;
     static RandomEnemyMovement instance;
 
@@ -26,7 +23,7 @@ public class RandomEnemyMovement : MonoBehaviour
 
     NavMeshAgent agent;
 
-    public Transform targetIndicator;
+    //public Transform targetIndicator;
 
     List<Transform> waypoints;
     List<Transform> tempRemovedWaypoints;
@@ -138,7 +135,7 @@ public class RandomEnemyMovement : MonoBehaviour
             case EnemyState.Retreating:
                 Vector3 point = RandomPoint(minRetreatRange, maxRetreatRange);
                 agent.SetDestination(point);
-                targetIndicator.position = point;
+                //targetIndicator.position = point;
 
                 agent.speed += retreatingSpeedAddAmount;
 
@@ -182,11 +179,6 @@ public class RandomEnemyMovement : MonoBehaviour
     void HandleTargeting()
     {
         agent.SetDestination(player.position);
-        if (agent.remainingDistance <= agent.stoppingDistance) // Player DEAD
-        {
-            Debug.Log("Player has been caught!");
-            OnPlayerCaught?.Invoke();
-        }
     }
 
     void HandlePatroling()
@@ -195,14 +187,13 @@ public class RandomEnemyMovement : MonoBehaviour
         {
             Vector3 point = RandomPoint(minPatrolingRange, maxPatrolingRange);
             agent.SetDestination(point);
-            targetIndicator.position = point;
+            //targetIndicator.position = point;
         }
         else // Check for player detection
         {
             Vector3 deltaVec = player.position - transform.position;
             if (deltaVec.magnitude <= targetRange
                 && Vector3.Dot(transform.forward, deltaVec) > 0)
-            // maybe raycast too
             {
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position, deltaVec.normalized, out hit, targetRange) && hit.collider.CompareTag("Player")) // Check if there is nothing between the player and the enemy
@@ -213,19 +204,8 @@ public class RandomEnemyMovement : MonoBehaviour
         }
     }
 
-    //int count = 0;
     Vector3 RandomPoint(float minRange, float maxRange)
     {
-//        Debug.Log("In");
-//        count++;
-//        if (count >= 10)
-//        {
-//            Debug.Log("ShouldQuit");
-//#if UNITY_EDITOR
-//            EditorApplication.isPlaying = false;
-//#endif
-//        }
-
         // Re-adds waypoints if there are no more left
         if (waypoints.Count == 0)
         {
@@ -255,7 +235,7 @@ public class RandomEnemyMovement : MonoBehaviour
         return NavMeshSamplePoint(rndWaypoint.position, waypointRadius);
     }
 
-    Vector3 NavMeshSamplePoint(Vector3 center, float samplingRadius=1f)
+    Vector3 NavMeshSamplePoint(Vector3 center, float samplingRadius = 1f)
     {
         int countOut = 0;
 
@@ -300,7 +280,7 @@ public class RandomEnemyMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Called on event fired because a knife hit the Enemy
+    /// Called on event fired due to a knife hitting the Enemy
     /// </summary>
     void DamageEnemy()
     {
@@ -336,7 +316,7 @@ public class RandomEnemyMovement : MonoBehaviour
 
             Vector3 point = NavMeshSamplePoint(hitPos);
             agent.SetDestination(point);
-            targetIndicator.position = point;
+            //targetIndicator.position = point;
         }
     }
 
@@ -344,8 +324,13 @@ public class RandomEnemyMovement : MonoBehaviour
     {
         if (collision.transform == player)
         {
-            Debug.Log($"Player has triggered targeting mode by bumping into the enemy");
-            SetState(EnemyState.Targeting);
+            if (state == EnemyState.Targeting)
+            {
+                Debug.Log("Player has been caught!");
+                OnPlayerCaught?.Invoke();
+            }
+            else
+                SetState(EnemyState.Targeting);
         }
     }
 

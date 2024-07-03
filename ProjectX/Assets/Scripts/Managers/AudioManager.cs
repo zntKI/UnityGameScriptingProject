@@ -97,96 +97,85 @@ public class AudioManager : MonoBehaviour
 
     void Start()
     {
-        audioSourceBG.volume = startVolume;
-
-        audioSourceBG.clip = startBgMusic;
-        audioSourceBG.Play();
+        SetupBGAudioSource(startBgMusic);
 
         currentBgMusic = startBgMusic;
     }
 
     void PlayKnifePickUpSound(int obj)
     {
-        audioSourceSFX.clip = knifePickUpSound;
-        audioSourceSFX.Play();
+        SetupSFXAudioSource(knifePickUpSound);
     }
 
     void PlayNotePickUpSound(string obj)
     {
-        audioSourceSFX.clip = notePickUpSound;
-        audioSourceSFX.Play();
+        SetupSFXAudioSource(notePickUpSound);
     }
 
     void PlayNoteCollapseSound()
     {
-        audioSourceSFX.clip = collapseNoteSound;
-        audioSourceSFX.Play();
+        SetupSFXAudioSource(collapseNoteSound);
     }
 
     void PlayKeyPickUpSound()
     {
-        audioSourceSFX.clip = keyPickUpSound;
-        audioSourceSFX.Play();
+        SetupSFXAudioSource(keyPickUpSound);
     }
 
     void PlayUnableToThrowKnifeSound()
     {
-        audioSourceSFX.clip = knifeUnableToThrowSound;
-        audioSourceSFX.Play();
+        SetupSFXAudioSource(knifeUnableToThrowSound);
     }
 
     void PlayWarningSound()
     {
-        audioSourceSFX.clip = warningSound;
+        SetupSFXAudioSource(warningSound);
+    }
+
+    void SetupSFXAudioSource(AudioClip clip)
+    {
+        audioSourceSFX.clip = clip;
         audioSourceSFX.Play();
     }
 
     void ChangeBgMusicToMid()
     {
-        SetupAudioSource(midBgMusic);
-
-        audioSourceBG.Play();
+        SetupBGAudioSource(midBgMusic);
 
         currentBgMusic = midBgMusic;
     }
 
     void ChangeBgMusicToEnd()
     {
-        SetupAudioSource(endBgMusic);
-
-        audioSourceBG.Play();
+        SetupBGAudioSource(endBgMusic);
 
         currentBgMusic = endBgMusic;
     }
 
     void ChangeBgMusicToGameOver()
     {
-        SetupAudioSource(gameOverBgMusic);
-
-        audioSourceBG.PlayDelayed(2);
+        SetupBGAudioSource(gameOverBgMusic, 2f);
 
         currentBgMusic = gameOverBgMusic;
     }
 
     void ChangeBgMusicToEnemyTargeting()
     {
-        SetupAudioSource(enemyTargetingBgMusic);
-
-        audioSourceBG.Play();
+        SetupBGAudioSource(enemyTargetingBgMusic);
     }
 
     void ChangeBackBgMusic()
     {
-        SetupAudioSource(currentBgMusic);
-
-        audioSourceBG.Play();
+        SetupBGAudioSource(currentBgMusic);
     }
 
-    void SetupAudioSource(AudioClip clipToPlayNext)
+    void SetupBGAudioSource(AudioClip clipToPlayNext, float delay=0f)
     {
         audioSourceBG.Stop();
         audioSourceBG.clip = clipToPlayNext;
         audioSourceBG.volume = startVolume;
+
+        audioSourceBG.PlayDelayed(delay);
     }
 
     public void PlayButtonClickSound()
