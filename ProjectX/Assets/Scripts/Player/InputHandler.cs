@@ -43,16 +43,9 @@ public class InputHandler : MonoBehaviour
 
     void Start()
     {
-        for (int i = 0; i < transform.parent.childCount; i++)
-        {
-            var child = transform.parent.GetChild(i);
-            if (child.CompareTag("MainCamera"))
-            {
-                cameraTransform = child;
-            }
-        }
+        cameraTransform = GameObject.FindGameObjectWithTag("MainCamera").transform;
         if (cameraTransform == null)
-            throw new InvalidOperationException("No main camera, child of Player pivot, found!");
+            throw new InvalidOperationException("No main camera found!");
     }
 
     void Update()

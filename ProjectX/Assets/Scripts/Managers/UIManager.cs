@@ -5,6 +5,7 @@ using System.Text;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,8 +15,14 @@ public class UIManager : MonoBehaviour
     public static UIState State => instance.state;
     UIState state;
 
+    public static event Action OnUIButtonClicked;
+    public static event Action OnUISliderChanged;
+
     public static event Action OnOverlayOpened;
     public static event Action OnOverlayClosed;
+
+    public static event Action<float> OnMouseSensitivityChanged;
+    public static event Action<string, float> OnVolumeChanged;
 
 
     [Header("Common")]
@@ -43,7 +50,16 @@ public class UIManager : MonoBehaviour
     [Header("Pause")]
 
     [SerializeField]
+    Transform pauseContainer;
+    [SerializeField]
     Transform pauseMenu;
+    [SerializeField]
+    Transform settingsMenu;
+
+    [SerializeField]
+    Slider mouseSensSlider;
+    [SerializeField]
+    Slider masterVolSlider, musicVolSlider, sfxVolumeSlider;
 
     const int startHour = 22;
 
@@ -171,15 +187,27 @@ public class UIManager : MonoBehaviour
     {
         state = UIState.PauseOverlay;
 
-        if (!pauseMenu.gameObject.activeSelf && !noteOverlay.gameObject.activeSelf)
+        if (!pauseContainer.gameObject.activeSelf && !noteOverlay.gameObject.activeSelf)
         {
             Debug.Log("Open pause menu");
             for (int i = 0; i < transform.childCount; i++)
             {
                 var child = transform.GetChild(i);
-                if (child == pauseMenu)
+                if (child == pauseContainer)
                 {
                     child.gameObject.SetActive(true);
+                    for (int j = 0; j < child.transform.childCount; j++)
+                    {
+                        var innerChild = child.transform.GetChild(j);
+                        if (innerChild == pauseMenu)
+                        {
+                            innerChild.gameObject.SetActive(true);
+                        }
+                        else if (innerChild == settingsMenu)
+                        {
+                            innerChild.gameObject.SetActive(false);
+                        }
+                    }
                 }
                 else
                 {
@@ -197,6 +225,8 @@ public class UIManager : MonoBehaviour
     public void ClosePauseMenu()
     {
         state = UIState.HUD;
+
+        OnUIButtonClicked?.Invoke();
 
         Debug.Log("Close pause menu");
         for (int i = 0; i < transform.childCount; i++)
@@ -216,6 +246,61 @@ public class UIManager : MonoBehaviour
 
         // Resume time
         OnOverlayClosed?.Invoke();
+    }
+
+    public void ShowControlsPage()
+    {
+        OnUIButtonClicked?.Invoke();
+
+        Debug.Log("Show settings menu");
+        for (int i = 0; i < pauseContainer.childCount; i++)
+        {
+            var child = pauseContainer.GetChild(i);
+            if (child == settingsMenu)
+            {
+                child.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    public void CloseControlsPage()
+    {
+        OnUIButtonClicked?.Invoke();
+
+        Debug.Log("Close settings menu");
+        for (int i = 0; i < pauseContainer.childCount; i++)
+        {
+            var child = pauseContainer.GetChild(i);
+            if (child == settingsMenu)
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void ChangeMouseSensitivity()
+    {
+        OnUISliderChanged?.Invoke();
+
+        OnMouseSensitivityChanged?.Invoke(mouseSensSlider.value);
+    }
+    public void ChangeMasterVol()
+    {
+        OnUISliderChanged?.Invoke();
+
+        OnVolumeChanged?.Invoke("MasterVol", masterVolSlider.value);
+    }
+    public void ChangeMusicVol()
+    {
+        OnUISliderChanged?.Invoke();
+
+        OnVolumeChanged?.Invoke("MusicVol", musicVolSlider.value);
+    }
+    public void ChangeSfxVol()
+    {
+        OnUISliderChanged?.Invoke();
+
+        OnVolumeChanged?.Invoke("SFXVol", sfxVolumeSlider.value);
     }
 
     void OnDestroy()

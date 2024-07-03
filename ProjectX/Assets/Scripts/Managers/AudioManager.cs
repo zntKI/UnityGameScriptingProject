@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager Instance => instance;
+    static AudioManager instance;
+
     [Header("BG Music")]
     [Space]
 
@@ -27,6 +30,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     [Range(0f, 1f)]
     float startVolume = .6f;
+
+    AudioClip currentBgMusic;
 
 
     [Header("Pick up sfx")]
@@ -51,8 +56,25 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     AudioClip warningSound;
 
+    [Header("UI sfx")]
+    [Space]
+
+    [SerializeField]
+    AudioClip btnClickSound;
+    [SerializeField]
+    AudioClip sliderChangeSound;
+
     void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            throw new InvalidOperationException("There can be only one AudioManager in the scene!");
+        }
+
         TimeManager.OnTimePhaseChangeToMid += ChangeBgMusicToMid;
         TimeManager.OnTimePhaseChangeToEnd += ChangeBgMusicToEnd;
         TimeManager.OnTimePhaseChangeToGameOver += ChangeBgMusicToGameOver;
@@ -66,13 +88,21 @@ public class AudioManager : MonoBehaviour
         InputHandler.OnNoteOverlayClose += PlayNoteCollapseSound;
 
         RandomEnemyMovement.OnEnemyTargeting += ChangeBgMusicToEnemyTargeting;
+        RandomEnemyMovement.OnEnemyRetreating += ChangeBackBgMusic;
         RandomEnemyMovement.OnEnemyDistracted += PlayWarningSound;
+
+        UIManager.OnUIButtonClicked += PlayButtonClickSound;
+        UIManager.OnUISliderChanged += PlaySliderChangeSound;
     }
 
     void Start()
     {
+        audioSourceBG.volume = startVolume;
+
         audioSourceBG.clip = startBgMusic;
         audioSourceBG.Play();
+
+        currentBgMusic = startBgMusic;
     }
 
     void PlayKnifePickUpSound(int obj)
@@ -116,6 +146,8 @@ public class AudioManager : MonoBehaviour
         SetupAudioSource(midBgMusic);
 
         audioSourceBG.Play();
+
+        currentBgMusic = midBgMusic;
     }
 
     void ChangeBgMusicToEnd()
@@ -123,6 +155,8 @@ public class AudioManager : MonoBehaviour
         SetupAudioSource(endBgMusic);
 
         audioSourceBG.Play();
+
+        currentBgMusic = endBgMusic;
     }
 
     void ChangeBgMusicToGameOver()
@@ -130,11 +164,20 @@ public class AudioManager : MonoBehaviour
         SetupAudioSource(gameOverBgMusic);
 
         audioSourceBG.PlayDelayed(2);
+
+        currentBgMusic = gameOverBgMusic;
     }
 
     void ChangeBgMusicToEnemyTargeting()
     {
         SetupAudioSource(enemyTargetingBgMusic);
+
+        audioSourceBG.Play();
+    }
+
+    void ChangeBackBgMusic()
+    {
+        SetupAudioSource(currentBgMusic);
 
         audioSourceBG.Play();
     }
@@ -146,10 +189,25 @@ public class AudioManager : MonoBehaviour
         audioSourceBG.volume = startVolume;
     }
 
+    public void PlayButtonClickSound()
+    {
+        audioSourceSFX.clip = btnClickSound;
+        audioSourceSFX.Play();
+    }
+
+    public void PlaySliderChangeSound()
+    {
+        if (!audioSourceSFX.isPlaying)
+        {
+            audioSourceSFX.clip = sliderChangeSound;
+            audioSourceSFX.Play();
+        }
+    }
+
     void Update()
     {
-        audioSourceBG.volume += Time.deltaTime / 10;
-        Mathf.Clamp(audioSourceBG.volume, 0f, 1f);
+        audioSourceBG.volume += Time.deltaTime / 100;
+        audioSourceBG.volume = Mathf.Clamp(audioSourceBG.volume, 0f, 0.3f);
     }
 
     void OnDestroy()
@@ -162,6 +220,15 @@ public class AudioManager : MonoBehaviour
         InventoryManager.OnNotePickedUp -= PlayNotePickUpSound;
         InventoryManager.OnKnifePickedUp -= PlayKnifePickUpSound;
 
+        InventoryManager.OnUnableToThrowKnife -= PlayUnableToThrowKnifeSound;
+
         InputHandler.OnNoteOverlayClose -= PlayNoteCollapseSound;
+
+        RandomEnemyMovement.OnEnemyTargeting -= ChangeBgMusicToEnemyTargeting;
+        RandomEnemyMovement.OnEnemyRetreating -= ChangeBackBgMusic;
+        RandomEnemyMovement.OnEnemyDistracted -= PlayWarningSound;
+
+        UIManager.OnUIButtonClicked -= PlayButtonClickSound;
+        UIManager.OnUISliderChanged -= PlaySliderChangeSound;
     }
 }

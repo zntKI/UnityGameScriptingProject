@@ -7,11 +7,6 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField]
     Transform cameraToRotate;
 
-    [SerializeField]
-    float sensX = 100f;
-    [SerializeField]
-    float sensY = 100f;
-
     float xRotation;
     float yRotation;
 
@@ -24,8 +19,8 @@ public class PlayerCameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * GameManager.MouseSens;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * GameManager.MouseSens;
 
         yRotation += mouseX;
 

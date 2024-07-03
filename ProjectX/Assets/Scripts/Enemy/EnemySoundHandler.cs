@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class EnemySoundHandler : MonoBehaviour
 {
+    [Header("Footsteps")]
+    [Space]
+
+    [SerializeField]
+    AudioSource audioSourceFootsteps;
+    [Space]
+
+    [SerializeField]
+    AudioClip[] footStepSounds;
+
+
     [Header("SFX")]
     [Space]
 
@@ -30,5 +41,12 @@ public class EnemySoundHandler : MonoBehaviour
     {
         audioSourceSFX.clip = enemyHitWhileTargetingSound;
         audioSourceSFX.Play();
+    }
+
+    public void PlayFootStepSound()
+    {
+        AudioClip footStepSound = footStepSounds[Random.Range(0, footStepSounds.Length)];
+        //audioSourceFootsteps.pitch = 1 + (Random.value * 2 - 1);
+        audioSourceFootsteps.PlayOneShot(footStepSound);
     }
 }

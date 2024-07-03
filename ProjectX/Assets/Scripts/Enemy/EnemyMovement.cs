@@ -18,6 +18,7 @@ public class RandomEnemyMovement : MonoBehaviour
     public static event Action OnPlayerCaught;
 
     public static event Action OnEnemyTargeting;
+    public static event Action OnEnemyRetreating;
     public static event Action OnEnemyDistracted;
 
     public EnemyState State => state;
@@ -98,7 +99,7 @@ public class RandomEnemyMovement : MonoBehaviour
 
         SetState(EnemyState.Patrolling);
 
-        soundHandler = GetComponent<EnemySoundHandler>();
+        soundHandler = transform.GetChild(0).GetComponent<EnemySoundHandler>();
     }
 
     void SetState(EnemyState newState)
@@ -140,6 +141,8 @@ public class RandomEnemyMovement : MonoBehaviour
                 targetIndicator.position = point;
 
                 agent.speed += retreatingSpeedAddAmount;
+
+                OnEnemyRetreating?.Invoke();
 
                 player.GetComponent<NavMeshObstacle>().enabled = true;
 

@@ -26,7 +26,7 @@ public class EndScreenUIController : MonoBehaviour
             {
                 child.gameObject.SetActive(true);
             }
-            else
+            else if (child == (!IsGameOver ? gameOverOverlay : gameWinOverlay))
             {
                 child.gameObject.SetActive(false);
             }

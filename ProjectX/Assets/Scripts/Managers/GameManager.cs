@@ -3,12 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance => instance;
     static GameManager instance;
+
+    public static float MouseSens => instance.mouseSens;
+    [SerializeField]
+    float mouseSens = 500f;
+
+    [SerializeField]
+    AudioMixer audioMixer;
 
     const string sceneStartManuName = "MenuScreen";
     const string scene1Name = "Level1";
@@ -31,6 +39,9 @@ public class GameManager : MonoBehaviour
 
         UIManager.OnOverlayOpened += PauseTime;
         UIManager.OnOverlayClosed += ResumeTime;
+
+        UIManager.OnMouseSensitivityChanged += ChangeMouseSens;
+        UIManager.OnVolumeChanged += ChangeVolume;
 
         PlayerMovement.OnPlayerFinish += LoadNextScene;
     }
@@ -61,6 +72,7 @@ public class GameManager : MonoBehaviour
         {
             case scene1Name:
                 SceneManager.LoadScene(sceneStartManuName);
+                Cursor.lockState = CursorLockMode.None;
                 break;
             case scene2Name: // Load GameOverScene
                 LoadNextScene();
@@ -80,6 +92,16 @@ public class GameManager : MonoBehaviour
     void ResumeTime()
     {
         Time.timeScale = 1f;
+    }
+
+    void ChangeMouseSens(float mouseSensValue)
+    {
+        mouseSens = mouseSensValue;
+    }
+
+    void ChangeVolume(string volumeParamName, float value)
+    {
+        audioMixer.SetFloat(volumeParamName, value);
     }
 
     void OnDestroy()
