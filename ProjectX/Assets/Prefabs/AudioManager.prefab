@@ -239,10 +239,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSourceBG: {fileID: 3697519569780040415}
-  startBgMusic: {fileID: 8300000, guid: ab8842b42fcaba04193bd8bc50c78cbf, type: 3}
-  midBgMusic: {fileID: 8300000, guid: ab63369db59adbf46b2761daeeebe63c, type: 3}
-  endBgMusic: {fileID: 8300000, guid: 85d9ce10089b6b44fa191f403fc494c3, type: 3}
-  gameOverBgMusic: {fileID: 8300000, guid: 10546d9649879d14e8277d84c34d122e, type: 3}
+  startBgMusic: {fileID: 8300000, guid: 5b69b8b5493bdfd49b32cce484fccf78, type: 3}
+  midBgMusic: {fileID: 8300000, guid: 2b0b6c6ec8730274ea0242995666b91d, type: 3}
+  endBgMusic: {fileID: 8300000, guid: 8c3015dbf06c4bc44aa1d9f5dddee662, type: 3}
+  gameOverBgMusic: {fileID: 8300000, guid: 6fdb0567f27638743a28344faba61360, type: 3}
   enemyTargetingBgMusic: {fileID: 8300000, guid: 59f52d1a51127954d96bfa5d6599c0a4, type: 3}
   startVolume: 0.2
   audioSourceSFX: {fileID: 7746891807820628274}
