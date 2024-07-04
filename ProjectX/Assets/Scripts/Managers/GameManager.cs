@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return; // just to be sure
         }
 
         RandomEnemyMovement.OnPlayerCaught += PlayerDie;

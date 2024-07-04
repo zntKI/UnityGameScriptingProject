@@ -179,6 +179,12 @@ public class RandomEnemyMovement : MonoBehaviour
     void HandleTargeting()
     {
         agent.SetDestination(player.position);
+        if (agent.pathStatus == NavMeshPathStatus.PathPartial)
+        {
+            Debug.Log("Player escaped Enemy");
+            SetState(EnemyState.Patrolling);
+            OnEnemyRetreating?.Invoke();
+        }
     }
 
     void HandlePatroling()

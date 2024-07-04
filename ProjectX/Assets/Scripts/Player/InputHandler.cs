@@ -25,9 +25,11 @@ public class InputHandler : MonoBehaviour
     public static event Action OnPauseMenuOpen;
 
     [SerializeField]
+    float pickUpRayMaxDist = 2f;
+    [SerializeField]
     float openDoorRayMaxDist = 4f;
     [SerializeField]
-    float pickUpRayMaxDist = 2f;
+    float throwKnifeInteractableTextRayMaxDist = 6f;
 
     void Awake()
     {
@@ -68,12 +70,17 @@ public class InputHandler : MonoBehaviour
                 {
                     CheckDoorType(hit.transform);
                 }
+                else if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, throwKnifeInteractableTextRayMaxDist)
+                    && hit.transform.CompareTag("Enemy"))
+                {
+                    OnInteractionTextEnable?.Invoke("Throw knife", (KeyCode)InputValues.ThrowKnife);
+                }
                 else
                 {
                     OnInteractionTextDisable?.Invoke();
                 }
 
-                if (Input.GetMouseButtonDown((int)InputValues.ThrowKnife))
+                if (Input.GetMouseButtonDown((int)InputValues.ThrowKnife - 323/*Mouse0 key code*/))
                 {
                     OnThrowKnife?.Invoke();
                 }
@@ -144,5 +151,5 @@ public enum InputValues
     OpenDoor = KeyCode.Q,
     CloseNoteOverlay = KeyCode.R,
     OpenPauseMenu = KeyCode.Escape,
-    ThrowKnife = 0
+    ThrowKnife = KeyCode.Mouse0
 }
