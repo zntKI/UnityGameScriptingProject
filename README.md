@@ -1,6 +1,7 @@
 # ProjectX
 
-A project I chose to work on for my Unity Game Scripting assignment, in which we had to create a 3D Game.
+A project I chose to work on for my Unity Game Scripting assignment, in which I had to create a 3D Game.<br><br>
+I decided to make a horror game in which the Player would have to escape an abandoned hospital while trying to avoid a crazy butcher.
 
 <p align="center">
   <img src="Media/demo.gif"><br/>
