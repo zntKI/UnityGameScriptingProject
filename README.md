@@ -22,7 +22,7 @@ I have utilized the Singleton pattern by creating several managers that all keep
 - **UI Manager**
 - **Audio Manager**<br>
 
-Then, they communicate through Events and that way update the state of the game.
+Then, they communicate through Events, updating the state of the game.
 
 ## Features
 
